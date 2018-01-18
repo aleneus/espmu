@@ -32,6 +32,7 @@ class PmuStreamDataReader:
         # TODO: doc
         if self.cli:
             self.cli.stop()
+            self.cli = None
 
     def start(self):
         # TODO: doc
