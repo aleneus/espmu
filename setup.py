@@ -11,17 +11,17 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 setup(
     name='espmu',
 
-    version='0.1.0',
+    version='0.1.1',
 
     description='C37.118 (PMU) data parser',
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://code.iti.illinois.edu/cdrew3/espmu',
+    url='https://bitbucket.org/aleneus/espmu',
 
     # Author details
-    author='Information Trust Institute',
-    author_email='cdrew3@illinois.edu',
+    author='Information Trust Institute (to 03.01.2017); Aleksandr Popov (since 25.12.2018)',
+    author_email='aleneus@gmail.com',
 
     license='MIT',
 

@@ -64,7 +64,6 @@ def readConfigFrame2(cli, debug=False):
         return None
     configFrame = ConfigFrame(bytesToHexStr(s), debug)
     expSize = configFrame.framesize
-    print("Frame size = {}".format(expSize))
     s = cli.readSample(expSize - 4)
     configFrame.frame = configFrame.frame + bytesToHexStr(s).upper()
     configFrame.finishParsing()
