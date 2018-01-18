@@ -5,8 +5,8 @@ from os import path
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
-with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
-    long_description = f.read()
+# with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
+#     long_description = f.read()
 
 setup(
     name='espmu',
@@ -14,7 +14,7 @@ setup(
     version='0.1.1',
 
     description='C37.118 (PMU) data parser',
-    long_description=long_description,
+    #long_description=long_description,
 
     # The project's main homepage.
     url='https://bitbucket.org/aleneus/espmu',
