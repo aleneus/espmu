@@ -18,14 +18,12 @@ class PmuStreamDataReader:
     def connect(self, ip, tcp_port, idcode):
         # TODO: doc
         self.idcode = idcode
-        self.ip = ip
-        self.tcp_port = tcp_port
         self.conf_frame = None
         self.cli = Client(ip, tcp_port, proto="TCP")
         self.cli.setTimeout(5)
-        pt.turnDataOff(self.cli, self.idcode)
+        pt.turnDataOff(self.cli, idcode)
         while not self.conf_frame:
-            pt.requestConfigFrame2(self.cli, self.idcode)
+            pt.requestConfigFrame2(self.cli, idcode)
             self.conf_frame = pt.readConfigFrame2(self.cli)
 
     def disconnect(self):
