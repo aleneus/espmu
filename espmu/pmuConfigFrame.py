@@ -85,6 +85,9 @@ class Station:
         self.phnmr = None
         self.annmr = None
         self.dgnmr = None
+        self.ph_channels = None
+        self.an_channels = None
+        self.dg_channels = None
         self.channels = None
         self.numOfChns = 0
         self.phunits = None
@@ -169,15 +172,52 @@ class Station:
         self.updateLength(l)
         print("DGNMR: ", self.dgnmr, sep="") if self.dbg else None
 
-    def parseCHNAME(self):
-        """Parses phasor and channel names field"""
-        self.numOfChns = self.phnmr + self.annmr + (16 * self.dgnmr)
-        self.channels = [None]*self.numOfChns
+    def parsePHNAME(self):
+        """Parses phasor field"""
+        self.numOfChns = self.phnmr
+        self.ph_channels = [None]*self.numOfChns
         l = 32
         for i in range(0, self.numOfChns):
-            self.channels[i] = bytes.fromhex(self.stationFrame[self.length:self.length+l]).decode('ascii')
+            self.ph_channels[i] = bytes.fromhex(self.stationFrame[self.length:self.length+l]).decode('ascii')
             self.updateLength(l)
-            print(self.channels[i]) if self.dbg else None
+            print(self.ph_channels[i]) if self.dbg else None
+
+    def parseANNAME(self):
+        """Parses analog channel names field"""
+        self.numOfChns = self.annmr
+        self.an_channels = [None]*self.numOfChns
+        l = 32
+        for i in range(0, self.numOfChns):
+            self.an_channels[i] = bytes.fromhex(self.stationFrame[self.length:self.length+l]).decode('ascii')
+            self.updateLength(l)
+            print(self.an_channels[i]) if self.dbg else None
+
+    def parseDGNAME(self):
+        """Parses digital channel names field"""
+        self.numOfChns = 16 * self.dgnmr
+        self.dg_channels = [None]*self.numOfChns
+        l = 32
+        for i in range(0, self.numOfChns):
+            self.dg_channels[i] = bytes.fromhex(self.stationFrame[self.length:self.length+l]).decode('ascii')
+            self.updateLength(l)
+            print(self.dg_channels[i]) if self.dbg else None
+
+    def parseCHNAME(self):
+        """Parses phasor and channel names field"""
+        self.parsePHNAME()
+        self.parseANNAME()
+        self.parseDGNAME()
+        self.channels = self.ph_channels + self.an_channels + self.dg_channels
+
+    # def parseCHNAME(self):
+    #     """Parses phasor and channel names field"""
+    #     self.numOfChns = self.phnmr + self.annmr + (16 * self.dgnmr)
+    #     self.channels = [None]*self.numOfChns
+    #     l = 32
+    #     for i in range(0, self.numOfChns):
+    #         self.channels[i] = bytes.fromhex(self.stationFrame[self.length:self.length+l]).decode('ascii')
+    #         self.updateLength(l)
+    #         print(self.channels[i]) if self.dbg else None
 
     def parsePHUNIT(self):
         """Parse conversion factor for phasor channels"""

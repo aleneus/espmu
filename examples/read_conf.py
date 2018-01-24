@@ -22,8 +22,8 @@ ss = reader.stations()
 fs = reader.rate()
 print("fs={} Hz\n".format(fs))
 
-for s, i in zip(ss, range(len(ss))):
-    qs = reader.quants(i)
-    print("{}: {}\n".format(s, qs))
+# for s, i in zip(ss, range(len(ss))):
+#     qs = reader.quants(i)
+#     print("{}: {}\n".format(s, qs))
     
 reader.disconnect()
