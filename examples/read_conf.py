@@ -11,6 +11,12 @@ tcp_port = 4713
 idcode = 1
 
 reader.connect(ip, tcp_port, idcode)
+
+if reader.is_time_reliable():
+    print("Time is reliable")
+else:
+    print("Time is not reliable")
+    
 ss = reader.stations()
 
 fs = reader.rate()

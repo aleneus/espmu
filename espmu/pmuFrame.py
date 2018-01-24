@@ -36,6 +36,7 @@ class PMUFrame:
         """
         self.parseIDCODE()
         self.parseSOC()
+        self.parseTQ()
         self.parseFRACSEC()
         self.parseCHK()
 
@@ -64,9 +65,16 @@ class PMUFrame:
         self.soc = SOC(self.frame[self.length:self.length+socSize])
         self.updateLength(socSize)
 
+    def parseTQ(self):
+        """Parse time guality flag"""
+        tqSize = 2
+        self.tq = int(self.frame[self.length:self.length+tqSize], 16)
+        self.updateLength(tqSize)
+        print("TQ: ", self.tq) if self.dbg else None
+
     def parseFRACSEC(self):
         """Parse fraction of second and time quality word"""
-        fracsecSize = 8
+        fracsecSize = 6
         self.fracsec = int(self.frame[self.length:self.length+fracsecSize], 16)
         self.updateLength(fracsecSize)
         print("FRACSEC: ", self.fracsec) if self.dbg else None

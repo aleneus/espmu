@@ -26,6 +26,12 @@ class PmuStreamDataReader:
             pt.requestConfigFrame2(self.cli, idcode)
             self.conf_frame = pt.readConfigFrame2(self.cli)
 
+    def is_time_reliable(self):
+        """ Check time quality flag and return False if time is not reliable, else True. """
+        if self.conf_frame.tq == 15:
+            return False
+        return True
+
     def disconnect(self):
         # TODO: doc
         if self.cli:
