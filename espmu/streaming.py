@@ -78,7 +78,7 @@ class PmuStreamDataReader:
             return False
         return True
 
-    def setup_ouput(self, station_ind, freq=False, phasors=[], radians=True):#, analogs=[], digitals=[]):
+    def setup_output(self, station_ind, freq=False, phasors=[], radians=True):#, analogs=[], digitals=[]):
         """ Setup the contents of outputed samples from station. """
         settings = {}
         settings['return_freq'] = freq

@@ -18,7 +18,7 @@ if not reader.is_time_reliable():
     print("Time is not reliable")
     exit()
 
-reader.setup_ouput(
+reader.setup_output(
     station_ind = 0,
     freq=True,
     phasors=['Uphs_a', 'Iphs_a', 'Uphs_b', 'Iphs_b', 'Uphs_c', 'Iphs_c']
