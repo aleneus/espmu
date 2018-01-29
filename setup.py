@@ -11,7 +11,7 @@ here = path.abspath(path.dirname(__file__))
 setup(
     name='espmu',
 
-    version='0.2.0',
+    version='0.3.0',
 
     description='C37.118 (PMU) data parser',
     #long_description=long_description,
