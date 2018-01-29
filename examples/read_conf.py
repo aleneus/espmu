@@ -7,7 +7,7 @@ from espmu.streaming import PmuStreamDataReader
 reader = PmuStreamDataReader()
 
 ip = "192.168.0.237"
-tcp_port = 4713
+tcp_port = 4712
 idcode = 1
 
 reader.connect(ip, tcp_port, idcode)
