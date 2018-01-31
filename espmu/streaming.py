@@ -16,7 +16,6 @@ class PmuStreamDataReader:
         self.__data_on = False
         self.__output_settings = []
         self.__conf_frame = None
-        self.station_index = None # TODO: deprecate
 
     def connect(self, ip, tcp_port, idcode):
         """ Connect to PDC or PMU. """
@@ -57,17 +56,6 @@ class PmuStreamDataReader:
 
         return data
         
-    def get_sample(self):
-        """ Deprecated. Use get_data instead. """
-        # TODO: deprecate
-        data_sample = pt.getDataSample(self.__cli)
-        data_frame = DataFrame(data_sample, self.__conf_frame)
-        secs = data_frame.soc.secCount
-        msecs = data_frame.fracsec / data_frame.configFrame.time_base.baseDecStr
-        x = data_frame.pmus[self.station_index].freq
-        t = secs + msecs
-        return x, t
-
     def is_data_on(self):
         """ Check if data stream is on. """
         return self.__data_on
