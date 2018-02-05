@@ -38,7 +38,7 @@ class Client:
             self.unixSock = True
         
         self.createSocket()
-        self.connectToDest()
+        # self.connectToDest()
 
     def createSocket(self):
         """Create socket based on constructor arguments""" 
@@ -55,11 +55,15 @@ class Client:
 
     def connectToDest(self):
         """Connect socket to destination IP:Port.  If UNIX socket then use destIP"""
-        if not self.useUdp:
-            if self.unixSock:
-                self.theSocket.connect(self.destIp)
-            else:
-                self.theSocket.connect(self.destAddr)
+        try:
+            if not self.useUdp:
+                if self.unixSock:
+                    self.theSocket.connect(self.destIp)
+                else:
+                    self.theSocket.connect(self.destAddr)
+            return True
+        except socket.timeout:
+            return False
 
     def readSample(self, bytesToRead):
         """

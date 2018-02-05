@@ -23,11 +23,14 @@ class PmuStreamDataReader:
         self.__conf_frame = None
         self.__cli = Client(ip, tcp_port, proto="TCP")
         self.__cli.setTimeout(5)
+        if not self.__cli.connectToDest():
+            return False
         pt.turnDataOff(self.__cli, idcode)
         while not self.__conf_frame:
             pt.requestConfigFrame2(self.__cli, idcode)
             self.__conf_frame = pt.readConfigFrame2(self.__cli)
         self.__output_settings = [None]*self.__conf_frame.num_pmu
+        return True
 
     def disconnect(self):
         """ Disconnect from PDC or PMU. """
