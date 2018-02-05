@@ -3,6 +3,7 @@
 
 import time
 import numpy as np
+import socket
 
 from espmu import tools as pt
 from espmu.client import Client
@@ -20,15 +21,23 @@ class PmuStreamDataReader:
     def connect(self, ip, tcp_port, idcode):
         """ Connect to PDC or PMU. """
         self.__idcode = idcode
-        self.__conf_frame = None
         self.__cli = Client(ip, tcp_port, proto="TCP")
         self.__cli.setTimeout(5)
         if not self.__cli.connectToDest():
             return False
         pt.turnDataOff(self.__cli, idcode)
-        while not self.__conf_frame:
+        
+        while True:
             pt.requestConfigFrame2(self.__cli, idcode)
-            self.__conf_frame = pt.readConfigFrame2(self.__cli)
+            answer = pt.readConfigFrame2(self.__cli)
+            if answer == None:
+                continue
+            elif answer == False:
+                return False
+            else:
+                self.__conf_frame = answer
+                break
+                
         self.__output_settings = [None]*self.__conf_frame.num_pmu
         return True
 

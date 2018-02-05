@@ -1,6 +1,7 @@
 """
 Tools for common functions relayed to commanding, reading, and parsing PMU data
 """
+import socket
 
 from .client import Client
 from .pmuConfigFrame import ConfigFrame 
@@ -54,14 +55,18 @@ def readConfigFrame2(cli, debug=False):
     :type cli: Client
     :param debug: Print debug statements
     :type debug: bool
-    :return: Populated ConfigFrame
+    :return: Fasle (no answer at all), None (answer is wrong) or Populated ConfigFrame (answer is ok)
     '''
     leading_byte = cli.readSample(1)
-    if leading_byte[0] != 170:
+    
+    if leading_byte == "": # can't get sample at all
+        return False
+    if leading_byte[0] != 170: # wrong synchronization word
         return None
     s = leading_byte + cli.readSample(3)
-    if (s[1] & 112) != 48:
+    if (s[1] & 112) != 48: # wrong frame type
         return None
+    
     configFrame = ConfigFrame(bytesToHexStr(s), debug)
     expSize = configFrame.framesize
     s = cli.readSample(expSize - 4)
