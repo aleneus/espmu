@@ -1,7 +1,6 @@
 """
 Tools for common functions relayed to commanding, reading, and parsing PMU data
 """
-import socket
 
 from .client import Client
 from .pmuConfigFrame import ConfigFrame 

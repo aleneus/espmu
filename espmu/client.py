@@ -62,7 +62,7 @@ class Client:
                 else:
                     self.theSocket.connect(self.destAddr)
             return True
-        except socket.timeout:
+        except OSError:
             return False
 
     def readSample(self, bytesToRead):
