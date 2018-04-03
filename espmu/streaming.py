@@ -113,3 +113,10 @@ class PmuStreamDataReader:
     def rate(self):
         """ Return data rate. """
         return self.__conf_frame.datarate
+
+    def phasors(self, station_ind):
+        ans = self.__conf_frame.stations[station_ind].ph_channels
+        res = []
+        for a in ans:
+            res.append(a.replace(" ", ""))
+        return res

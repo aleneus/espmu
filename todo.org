@@ -1,6 +1,7 @@
 * 0.5.0
-** TODO [t] Add branch develop
-** TODO [t] PmuStreamDataReader: Add method for asking of analogs
-** TODO [t] PmuStreamDataReader: Add method for asking of phasors
+** DONE [t] Add branch develop
+** DONE [t] PmuStreamDataReader: Add method for asking of phasors
+** TODO [t] Inspect PmuStreamDataReader
 * 0.6.0
+** TODO [p] PmuStreamDataReader: Add method for asking of analogs
 ** TODO [p] Work on reading data from several stations
