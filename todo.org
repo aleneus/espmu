@@ -2,6 +2,7 @@
 ** DONE [t] Add branch develop
 ** DONE [t] PmuStreamDataReader: Add method for asking of phasors
 ** TODO [t] Inspect PmuStreamDataReader
+** DONE [p] PmuStreamDataReader: Add method for asking of analogs
+** TODO [p] PmuStreamDataReader: Rename phasors() -> get_phasor_names() and analogs() -> get_analog_names()
 * 0.6.0
-** TODO [p] PmuStreamDataReader: Add method for asking of analogs
 ** TODO [p] Work on reading data from several stations

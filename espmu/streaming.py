@@ -66,6 +66,12 @@ class PmuStreamDataReader:
                 phasor = station.phasors[ind]
                 data['phasors'].append((phasor.mag, phasor.rad if settings['radians'] else phasor.deg))
 
+        if len(settings['analog_inds']) > 0:
+            data['analogs'] = []
+            for ind in settings['analog_inds']:
+                value = station.analogs[ind]
+                data['analogs'].append(value[1])
+
         return data
         
     def is_data_on(self):
@@ -78,18 +84,29 @@ class PmuStreamDataReader:
             return False
         return True
 
-    def setup_output(self, station_ind, freq=False, phasors=[], radians=True):#, analogs=[], digitals=[]):
+    def setup_output(self, station_ind, freq=False, phasors=[], radians=True, analogs=[]):#, digitals=[]):
         """ Setup the contents of outputed samples from station. """
         settings = {}
         settings['return_freq'] = freq
+
+        # ph_names = self.phasors(station_ind)
         ph_names = []
         for s in self.__conf_frame.stations[station_ind].ph_channels:
             ph_names.append(s.replace(" ",""))
         inds = []
         for phasor in phasors:
-            inds.append(ph_names.index(phasor))
+            ind = ph_names.index(phasor)
+            inds.append(ind)
         settings['phasor_inds'] = inds
         settings['radians'] = radians
+
+        an_names = self.analogs(station_ind)
+        inds = []
+        for an in analogs:
+            ind = an_names.index(an)
+            inds.append(ind)
+        settings['analog_inds'] = inds
+        
         self.__output_settings[station_ind] = settings
         return True
 
@@ -120,3 +137,11 @@ class PmuStreamDataReader:
         for a in ans:
             res.append(a.replace(" ", ""))
         return res
+
+    def analogs(self, station_ind):
+        ans = self.__conf_frame.stations[station_ind].an_channels
+        res = []
+        for a in ans:
+            res.append(a.replace(" ", ""))
+        return res
+
