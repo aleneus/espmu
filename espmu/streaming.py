@@ -163,4 +163,16 @@ class PmuStreamDataReader:
                 value = station.analogs[ind]
                 data.append(value[1])
         return data
-        
+
+    def get_full_sample(self, station_ind):
+        data_frame = DataFrame(pt.getDataSample(self.__cli), self.__conf_frame)
+        station = data_frame.pmus[station_ind]
+        secs = data_frame.soc.secCount
+        msecs = data_frame.fracsec / data_frame.configFrame.time_base.baseDecStr
+        data = [secs + msecs]
+        data.append(station.freq)
+        for phasor in station.phasors:
+            data.append((phasor.mag, phasor.rad))
+        for analog in station.analogs:
+            data.append(analog[1])
+        return data
