@@ -145,3 +145,22 @@ class PmuStreamDataReader:
             res.append(a.replace(" ", ""))
         return res
 
+    def get_sample(self, station_ind):
+        settings = self.__output_settings[station_ind]
+        data_frame = DataFrame(pt.getDataSample(self.__cli), self.__conf_frame)
+        station = data_frame.pmus[station_ind]
+        secs = data_frame.soc.secCount
+        msecs = data_frame.fracsec / data_frame.configFrame.time_base.baseDecStr
+        data = [secs + msecs]
+        if settings['return_freq']:
+            data.append(station.freq)
+        if len(settings['phasor_inds']) > 0:
+            for ind in settings['phasor_inds']:
+                phasor = station.phasors[ind]
+                data.append((phasor.mag, phasor.rad if settings['radians'] else phasor.deg))
+        if len(settings['analog_inds']) > 0:
+            for ind in settings['analog_inds']:
+                value = station.analogs[ind]
+                data.append(value[1])
+        return data
+        

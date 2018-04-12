@@ -1,8 +1,11 @@
 * 0.5.0
 ** DONE [t] Add branch develop
 ** DONE [t] PmuStreamDataReader: Add method for asking of phasors
+** TODO [t] Implement the "ligth" version of getting sample
 ** TODO [t] Inspect PmuStreamDataReader
 ** DONE [p] PmuStreamDataReader: Add method for asking of analogs
 ** TODO [p] PmuStreamDataReader: Rename phasors() -> get_phasor_names() and analogs() -> get_analog_names()
+** TODO [t] Add docstring to get_sample in streaming.py
+** TODO [p] streaming: Deprecate old get_data()
 * 0.6.0
 ** TODO [p] Work on reading data from several stations
