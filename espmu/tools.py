@@ -89,12 +89,27 @@ def getDataSample(rcvr, debug=False):
         introHexStr = bytesToHexStr(rcvr.readSample(4))
         lenToRead = int(introHexStr[5:], 16)
         remainingHexStr = bytesToHexStr(rcvr.readSample(lenToRead))
-
         fullHexStr = introHexStr + remainingHexStr
     else:
         fullHexStr = bytesToHexStr(rcvr.readSample(64000))
 
     return fullHexStr
+
+
+def get_data_frames(data_sample, conf_frame, number_format='float'):
+    """ Return list of data frames from data_sample. """
+    data_frames = []
+    data_sample_len = len(data_sample)
+    start_pos = 0
+    while True:
+        tail = data_sample[start_pos:]
+        data_frame = DataFrame(tail, conf_frame)
+        data_frames.append(data_frame)
+        start_pos += data_frame.stub_length
+        if start_pos >= len(data_sample):
+            break
+    return data_frames
+
 
 def startDataCapture(idcode, ip, port=4712, tcpUdp="TCP", debug=False):
     '''

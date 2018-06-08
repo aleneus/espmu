@@ -1,4 +1,5 @@
-""" This module implements the class for high-level interaction with number of PMUs (stations) whithin PDC. """
+""" This module implements the class for high-level interaction with
+number of PMUs (stations) whithin PDC. """
 # TODO: add to docs
 
 import time
@@ -165,6 +166,7 @@ class PmuStreamDataReader:
         return data
 
     def get_full_sample(self, station_ind):
+        """ Deprecated. Return sample. """
         data_frame = DataFrame(pt.getDataSample(self.__cli), self.__conf_frame)
         station = data_frame.pmus[station_ind]
         secs = data_frame.soc.secCount
@@ -176,3 +178,21 @@ class PmuStreamDataReader:
         for analog in station.analogs:
             data.append(analog[1])
         return data
+
+    def get_full_samples(self, station_ind):
+        """ Return list of samples. """
+        data_sample = pt.getDataSample(self.__cli)
+        data_frames = pt.get_data_frames(data_sample, self.__conf_frame)
+        samples = []
+        for data_frame in data_frames:
+            station = data_frame.pmus[station_ind]
+            secs = data_frame.soc.secCount
+            msecs = data_frame.fracsec / data_frame.configFrame.time_base.baseDecStr
+            sample = [secs + msecs]
+            sample.append(station.freq)
+            for phasor in station.phasors:
+                sample.append((phasor.mag, phasor.rad))
+            for analog in station.analogs:
+                sample.append(analog[1])
+            samples.append(sample)
+        return samples

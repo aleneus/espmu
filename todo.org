@@ -1,4 +1,7 @@
 * 0.5.0
+** TODO [b] Only on of two samples in data frame is getted
+** DONE [t] Add tools for getting many frames from data sample
+** TODO [t] Fix stub frame length
 ** DONE [t] Add branch develop
 ** DONE [t] PmuStreamDataReader: Add method for asking of phasors
 ** DONE [t] Implement the "ligth" version of getting sample

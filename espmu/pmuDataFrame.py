@@ -26,6 +26,7 @@ class DataFrame(PMUFrame):
         self.dfreq = None
         self.analog = None
         self.digital = None
+        self.stub_length = 288 # stub
 
         self.configFrame = theConfigFrame
         self.dbg = debug
@@ -41,16 +42,38 @@ class DataFrame(PMUFrame):
         nextPmuStartingPos = 28
         self.pmus = [None]*self.configFrame.num_pmu
         for i in range(0, len(self.pmus)):
-            print("*** ", self.configFrame.stations[i].stn.strip(), " ***", sep="") if self.dbg else None
-            self.pmus[i] = PMU(self.frame[nextPmuStartingPos:], self.configFrame.stations[i])
-            print("Len =", self.pmus[i].length) if self.dbg else None
-            print(self.frame[nextPmuStartingPos:(nextPmuStartingPos+self.pmus[i].length)]) if self.dbg else None
+            print("*** ",
+                  self.configFrame.stations[i].stn.strip(),
+                  " ***",
+                  sep="") if self.dbg else None
+            self.pmus[i] = PMU(
+                self.frame[nextPmuStartingPos:],
+                self.configFrame.stations[i]
+            )
+            if self.dbg:
+                print("Len =", self.pmus[i].length)
+                print(self.frame[nextPmuStartingPos:(nextPmuStartingPos+\
+                                                     self.pmus[i].length)])
             nextPmuStartingPos = nextPmuStartingPos + self.pmus[i].length
     
     def updateSOC(self):
         self.soc.ff = self.fracsec / self.configFrame.time_base.baseDecStr
-        self.soc.formatted = "{:0>4}/{:0>2}/{:0>2} {:0>2}:{:0>2}:{:0>2}{}".format(self.soc.yyyy, self.soc.mm, self.soc.dd, self.soc.hh, self.soc.mi, self.soc.ss, "{:f}".format(self.soc.ff).lstrip('0'))
-        dt = datetime(self.soc.yyyy, self.soc.mm, self.soc.dd, self.soc.hh, self.soc.mi, self.soc.ss, int(self.soc.ff * 10 ** 6)) 
+        self.soc.formatted = "{:0>4}/{:0>2}/{:0>2} {:0>2}:{:0>2}:{:0>2}{}".format(
+            self.soc.yyyy,
+            self.soc.mm,
+            self.soc.dd,
+            self.soc.hh,
+            self.soc.mi,
+            self.soc.ss, "{:f}".format(self.soc.ff).lstrip('0'))
+        dt = datetime(
+            self.soc.yyyy,
+            self.soc.mm,
+            self.soc.dd,
+            self.soc.hh,
+            self.soc.mi,
+            self.soc.ss,
+            int(self.soc.ff * 10 ** 6)
+        )
         self.soc.utcSec = (dt - datetime(1970, 1, 1)).total_seconds()
         
 class PMU:

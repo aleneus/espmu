@@ -31,8 +31,11 @@ class PMUFrame:
 
     def finishParsing(self):
         """
-        When getting the config frame, the size is unknown.  After creating a PMUFrame with the first 4 bytes, the remaining frame bytes are read
-        and added to self.frame.  Once that is populated the remaining fields can be parsed
+        When getting the config frame, the size is unknown.  After
+        creating a PMUFrame with the first 4 bytes, the remaining
+        frame bytes are read and added to self.frame. Once that is
+        populated the remaining fields can be parsed.
+
         """
         self.parseIDCODE()
         self.parseSOC()
@@ -88,6 +91,7 @@ class PMUFrame:
     def updateLength(self, sizeToAdd):
         """Keeps track of index for overall frame"""
         self.length = self.length + sizeToAdd
+
 
 class SYNC:
     """Class for describing the frame synchronization word
