@@ -5,7 +5,7 @@
 ** DONE [t] Add branch develop
 ** DONE [t] PmuStreamDataReader: Add method for asking of phasors
 ** DONE [t] Implement the "ligth" version of getting sample
-** TODO [t] Inspect PmuStreamDataReader
+** DONE [t] Inspect PmuStreamDataReader
 ** DONE [p] PmuStreamDataReader: Add method for asking of analogs
 ** TODO [p] PmuStreamDataReader: Rename phasors() -> get_phasor_names() and analogs() -> get_analog_names()
 ** TODO [t] Add docstring to get_sample in streaming.py
@@ -13,7 +13,10 @@
 ** DONE [t] Add quck function for getting the full sample
 ** TODO [t] streaming: Add docstring to get_full_sample()
 ** TODO [t] Support int numbers format
+** TODO [t] Add streaming.py to docs
 * 0.6.0
 ** TODO [p] Work on reading data from several stations
 ** TODO [t] Use logging for debug
 ** TODO [t] Remove debug prints
+** TODO [t] Remove depracated methods get_full_sample()
+** TODO [t] get_full_samples() --rename--> get_data()
