@@ -6,6 +6,7 @@ from .pmuLib import *
 from .pmuFrame import PMUFrame
 from .pmuEnum import *
 
+
 class DataFrame(PMUFrame):
     """
     Class for creating a Data Frame based on C37.118-2011  
@@ -19,15 +20,13 @@ class DataFrame(PMUFrame):
     """
 
     def __init__(self, frameInHexStr, theConfigFrame, debug=False):
-
         self.stat = None
         self.pmus = None
         self.freq = None
         self.dfreq = None
         self.analog = None
         self.digital = None
-        self.stub_length = 288 # stub
-
+        self.parse_pos = 0
         self.configFrame = theConfigFrame
         self.dbg = debug
         super().__init__(frameInHexStr, self.dbg)
@@ -36,25 +35,15 @@ class DataFrame(PMUFrame):
         self.updateSOC()
 
     def parsePmus(self):
-        """Parses each PMU present in the data frame"""
-        print("***** PHASORS *****") if self.dbg else None
-
-        nextPmuStartingPos = 28
+        """ Parses each PMU present in the data frame. """
+        self.parse_pos = 28
         self.pmus = [None]*self.configFrame.num_pmu
         for i in range(0, len(self.pmus)):
-            print("*** ",
-                  self.configFrame.stations[i].stn.strip(),
-                  " ***",
-                  sep="") if self.dbg else None
             self.pmus[i] = PMU(
-                self.frame[nextPmuStartingPos:],
+                self.frame[self.parse_pos:],
                 self.configFrame.stations[i]
             )
-            if self.dbg:
-                print("Len =", self.pmus[i].length)
-                print(self.frame[nextPmuStartingPos:(nextPmuStartingPos+\
-                                                     self.pmus[i].length)])
-            nextPmuStartingPos = nextPmuStartingPos + self.pmus[i].length
+            self.parse_pos += self.pmus[i].length
     
     def updateSOC(self):
         self.soc.ff = self.fracsec / self.configFrame.time_base.baseDecStr
@@ -75,6 +64,8 @@ class DataFrame(PMUFrame):
             int(self.soc.ff * 10 ** 6)
         )
         self.soc.utcSec = (dt - datetime(1970, 1, 1)).total_seconds()
+        self.parse_pos += 4
+
         
 class PMU:
     """Class for a PMU in a data frame
@@ -262,6 +253,7 @@ class Phasor:
         print("Rad:", "=", self.rad) if self.dbg else None
         print("Deg:", "=", self.deg) if self.dbg else None
 
+
 class Stat:
     """Class for foling bit mapped flags
 
@@ -340,4 +332,3 @@ class Stat:
         """Parse trigger reason bits"""
         self.triggerReason = TriggerReason(int(hexToBin(self.statHex[3], 4), 2)).name
         print("TriggerReason: ", self.triggerReason) if self.dbg else None
-

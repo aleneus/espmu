@@ -1,14 +1,16 @@
-"""
-Tools for common functions relayed to commanding, reading, and parsing PMU data
-"""
+""" Tools for common functions relayed to commanding, reading, and
+parsing PMU data """
 
 from .client import Client
-from .pmuConfigFrame import ConfigFrame 
+from .pmuConfigFrame import ConfigFrame
 from .pmuCommandFrame import CommandFrame
-#from .aggPhasor import *
-from .pmuDataFrame import *
+# ref
+from .pmuLib import bytesToHexStr
+from .pmuDataFrame import DataFrame
+# from .pmuDataFrame import *
 
 MAXFRAMESIZE = 65535
+
 
 def turnDataOff(cli, idcode):
     '''
@@ -22,6 +24,7 @@ def turnDataOff(cli, idcode):
     cmdOff = CommandFrame("DATAOFF", idcode)
     cli.sendData(cmdOff.fullFrameBytes)
 
+
 def turnDataOn(cli, idcode):
     '''
     Send command to turn on real-time data
@@ -33,6 +36,7 @@ def turnDataOn(cli, idcode):
     '''
     cmdOn = CommandFrame("DATAON", idcode)
     cli.sendData(cmdOn.fullFrameBytes)
+
 
 def requestConfigFrame2(cli, idcode):
     '''
@@ -46,6 +50,7 @@ def requestConfigFrame2(cli, idcode):
     cmdConfig2 = CommandFrame("CONFIG2", idcode)
     cli.sendData(cmdConfig2.fullFrameBytes)
 
+
 def readConfigFrame2(cli, debug=False):
     '''
     Retrieve and return config frame 2 from PMU or PDC
@@ -54,37 +59,34 @@ def readConfigFrame2(cli, debug=False):
     :type cli: Client
     :param debug: Print debug statements
     :type debug: bool
-    :return: Fasle (no answer at all), None (answer is wrong) or Populated ConfigFrame (answer is ok)
+    :return: Fasle (no answer at all), None (answer is wrong) or
+    Populated ConfigFrame (answer is ok)
     '''
     leading_byte = cli.readSample(1)
-    
-    if leading_byte == "": # can't get sample at all
+    if leading_byte == "":  # can't get sample at all
         return False
-    if leading_byte[0] != 170: # wrong synchronization word
+    if leading_byte[0] != 170:  # wrong synchronization word
         return None
-    s = leading_byte + cli.readSample(3)
-    if (s[1] & 112) != 48: # wrong frame type
+    sample = leading_byte + cli.readSample(3)
+    if (sample[1] & 112) != 48:  # wrong frame type
         return None
-    
-    configFrame = ConfigFrame(bytesToHexStr(s), debug)
-    expSize = configFrame.framesize
-    s = cli.readSample(expSize - 4)
-    configFrame.frame = configFrame.frame + bytesToHexStr(s).upper()
-    configFrame.finishParsing()
-    return configFrame
+    config_frame = ConfigFrame(bytesToHexStr(sample), debug)
+    exp_size = config_frame.framesize
+    sample = cli.readSample(exp_size - 4)
+    config_frame.frame = config_frame.frame + bytesToHexStr(sample).upper()
+    config_frame.finishParsing()
+    return config_frame
 
-def getDataSample(rcvr, debug=False):
+
+def getDataSample(rcvr):
     '''
     Get a data sample regardless of TCP or UDP connection
 
     :param rcvr: Object used for receiving data frames
     :type rcvr: :class:`Client`/:class:`Server`
-    :param debug: Print debug statements
-    :type debug: bool
     :return: Data frame in hex string format
     '''
     fullHexStr = ""
-
     if type(rcvr) == "client":
         introHexStr = bytesToHexStr(rcvr.readSample(4))
         lenToRead = int(introHexStr[5:], 16)
@@ -92,20 +94,18 @@ def getDataSample(rcvr, debug=False):
         fullHexStr = introHexStr + remainingHexStr
     else:
         fullHexStr = bytesToHexStr(rcvr.readSample(64000))
-
     return fullHexStr
 
 
-def get_data_frames(data_sample, conf_frame, number_format='float'):
+def get_data_frames(data_sample, conf_frame):
     """ Return list of data frames from data_sample. """
     data_frames = []
-    data_sample_len = len(data_sample)
     start_pos = 0
     while True:
         tail = data_sample[start_pos:]
         data_frame = DataFrame(tail, conf_frame)
         data_frames.append(data_frame)
-        start_pos += data_frame.stub_length
+        start_pos += data_frame.parse_pos
         if start_pos >= len(data_sample):
             break
     return data_frames
@@ -132,16 +132,14 @@ def startDataCapture(idcode, ip, port=4712, tcpUdp="TCP", debug=False):
 
     cli = Client(ip, port, tcpUdp)
     cli.setTimeout(5)
-    
     turnDataOff(cli, idcode)
-    while configFrame == None:
+    while configFrame is None:
         requestConfigFrame2(cli, idcode)
         configFrame = readConfigFrame2(cli, debug)
-
-    #turnDataOn(cli, idcode)
     cli.stop()
 
     return configFrame
+
 
 def getStations(configFrame):
     """
@@ -156,52 +154,30 @@ def getStations(configFrame):
     for s in configFrame.stations:
         print("Station:", s.stn)
         stations.append(s)
-    
     return stations
 
-def createAggPhasors(configFrame):
-    """
-    Creates an array of aggregate phasors for data collection
-
-    :param configFrame: ConfigFrame containing stations
-    :type configFrame: ConfigFrame
-
-    :return: List containing all the station AggPhasor objects
-    """
-    pmus = []
-    for s in getStations(configFrame):
-        phasors = []
-        print("Name:", s.stn)
-        for p in range(0, s.phnmr):
-            print("Phasor:", s.channels[p])
-            theUnit = "VOLTS"
-            if s.phunits[p].voltORcurr == "CURRENT":
-                theUnit = "AMPS"
-            phasors.append(AggPhasor(s.stn.strip() + "/" + s.channels[p].strip(), theUnit))
-
-        pmus.append(phasors)
-    
-    return pmus
 
 def parseSamples(data, configFrame, pmus):
     """
-    Takes in an array of dataFrames and inserts the data into an array of aggregate phasors
+    Takes in an array of dataFrames and inserts the data into an array
+    of aggregate phasors
 
-    :param data: List containing all the data samples
-    :type data: List
-    :param configFrame: ConfigFrame containing stations
-    :type configFrame: ConfigFrame
-    :param pmus: List of phasor values
-    :type pmus: List
+    :param data: List containing all the data samples :type data: List
+    :param configFrame: ConfigFrame containing stations :type
+    configFrame: ConfigFrame :param pmus: List of phasor values :type
+    pmus: List
 
     :return: List containing all the phasor values
     """
     numOfSamples = len(data)
     for s in range(0, numOfSamples):
         for p in range(0, len(data[s].pmus)):
-            for ph in range(0, len(data[s].pmus[p].phasors)):
-                utcTimestamp = data[s].soc.utcSec + (data[s].fracsec / configFrame.time_base.baseDecStr) 
-                pmus[p][ph].addSample(utcTimestamp, data[s].pmus[p].phasors[ph].mag, data[s].pmus[p].phasors[ph].rad)
+            for phasor in range(0, len(data[s].pmus[p].phasors)):
+                msec = (data[s].fracsec / configFrame.time_base.baseDecStr)
+                utc_timestamp = data[s].soc.utcSec + msec
+                pmus[p][phasor].addSample(
+                    utc_timestamp,
+                    data[s].pmus[p].phasors[phasor].mag,
+                    data[s].pmus[p].phasors[phasor].rad)
 
     return pmus
-

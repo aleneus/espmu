@@ -1,7 +1,7 @@
 * 0.5.0
-** TODO [b] Only on of two samples in data frame is getted
+** DONE [b] Only on of two samples in data frame is getted
 ** DONE [t] Add tools for getting many frames from data sample
-** TODO [t] Fix stub frame length
+** DONE [t] Fix stub frame length
 ** DONE [t] Add branch develop
 ** DONE [t] PmuStreamDataReader: Add method for asking of phasors
 ** DONE [t] Implement the "ligth" version of getting sample
@@ -12,5 +12,8 @@
 ** TODO [p] streaming: Deprecate old get_data()
 ** DONE [t] Add quck function for getting the full sample
 ** TODO [t] streaming: Add docstring to get_full_sample()
+** TODO [t] Support int numbers format
 * 0.6.0
 ** TODO [p] Work on reading data from several stations
+** TODO [t] Use logging for debug
+** TODO [t] Remove debug prints
