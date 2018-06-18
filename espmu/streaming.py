@@ -1,13 +1,8 @@
 """ This module implements the class for high-level interaction with
 number of PMUs (stations) whithin PDC. """
 
-import time
-import numpy as np
-import socket
-
 from espmu import tools as pt
 from espmu.client import Client
-from espmu.pmuDataFrame import DataFrame
 
 
 class PmuStreamDataReader:
@@ -20,10 +15,10 @@ class PmuStreamDataReader:
         self.__output_settings = []
         self.__conf_frame = None
 
-    def connect(self, ip, tcp_port, idcode):
+    def connect(self, ip_addr, tcp_port, idcode):
         """ Connect to PDC or PMU. """
         self.__idcode = idcode
-        self.__cli = Client(ip, tcp_port, proto="TCP")
+        self.__cli = Client(ip_addr, tcp_port, proto="TCP")
         self.__cli.setTimeout(5)
         if not self.__cli.connectToDest():
             return False
@@ -67,8 +62,8 @@ class PmuStreamDataReader:
         """ Return the names of stations. """
         if not self.__conf_frame:
             return None
-        ss = self.__conf_frame.stations
-        return [s.stn.replace(" ", "") for s in ss]
+        st_names = self.__conf_frame.stations
+        return [st_name.stn.replace(" ", "") for st_name in st_names]
 
     def stop(self):
         """ Stop data stream. """
@@ -80,17 +75,19 @@ class PmuStreamDataReader:
         return self.__conf_frame.datarate
 
     def phasors(self, station_ind):
-        ans = self.__conf_frame.stations[station_ind].ph_channels
+        """ Return list of phasors names. """
+        ph_names = self.__conf_frame.stations[station_ind].ph_channels
         res = []
-        for a in ans:
-            res.append(a.replace(" ", ""))
+        for ph_name in ph_names:
+            res.append(ph_name.replace(" ", ""))
         return res
 
     def analogs(self, station_ind):
-        ans = self.__conf_frame.stations[station_ind].an_channels
+        """ Return list of names of analog values. """
+        an_names = self.__conf_frame.stations[station_ind].an_channels
         res = []
-        for a in ans:
-            res.append(a.replace(" ", ""))
+        for an_name in an_names:
+            res.append(an_name.replace(" ", ""))
         return res
 
     def get_full_samples(self, station_ind):
