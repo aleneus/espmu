@@ -11,7 +11,7 @@
 ** DONE [t] Add quck function for getting the full sample
 ** DONE [t] streaming: Add docstring to get_full_sample()
 ** DONE [t] Remove depracated methods in streaming
-** TODO [t] Check streaming.py with syntax analyzers
+** DONE [t] Check streaming.py with syntax analyzers
 ** TODO [t] phasors() --rename--> get_phasor_names()
 ** TODO [t] analogs() --rename--> get_analog_names()
 ** TODO [t] streaming.py --rename--> pmu_reader.py
