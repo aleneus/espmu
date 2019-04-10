@@ -39,8 +39,14 @@ class CommandFrame(PMUFrame):
         self.commandHex = self.genCmd()
         # TODO: No support for extended frame yet
         self.framesize = hex(int((self.length+8)/2))[2:].zfill(4)
-        cmdHex = sum([self.sync, self.framesize, self.idcode,
-                      self.soc, self.fracsec, self.commandHex])
+
+        cmdHex = self.sync
+        cmdHex += self.framesize
+        cmdHex += self.idcode
+        cmdHex += self.soc
+        cmdHex += self.fracsec
+        cmdHex += self.commandHex
+
         self.genChk(cmdHex)
         cmdHex = cmdHex + self.chk
         self.fullFrameHexStr = cmdHex.upper()
