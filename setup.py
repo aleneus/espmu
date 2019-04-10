@@ -2,30 +2,26 @@ from setuptools import setup, find_packages
 from codecs import open
 from os import path
 
-here = path.abspath(path.dirname(__file__))
-
-# Get the long description from the README file
-# with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
-#     long_description = f.read()
+AUTHORS = ['Information Trust Institute (to 03.01.2017)',
+           'Aleksandr Popov (since 25.12.2018)']
 
 setup(
     name='espmu',
 
-    version='0.4.0',
+    version='0.5.0',
 
     description='C37.118 (PMU) data parser',
-    #long_description=long_description,
+    long_description='C37.118 (PMU) data parser',
 
     # The project's main homepage.
     url='https://bitbucket.org/aleneus/espmu',
 
     # Author details
-    author='Information Trust Institute (to 03.01.2017); Aleksandr Popov (since 25.12.2018)',
+    author='; '.join(AUTHORS)
     author_email='aleneus@gmail.com',
 
     license='MIT',
 
-    # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
         'Development Status :: 3 - Alpha',
 

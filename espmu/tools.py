@@ -152,7 +152,7 @@ def getStations(configFrame):
     """
     stations = []
     for s in configFrame.stations:
-        print("Station:", s.stn)
+        # print("Station:", s.stn)
         stations.append(s)
     return stations
 
