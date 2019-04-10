@@ -2,6 +2,7 @@ from datetime import datetime
 from .pmuEnum import *
 from .pmuLib import *
 
+
 class PMUFrame:
     """
     Super class for all C37.118-2005/C37.118-2011 frames
@@ -21,7 +22,7 @@ class PMUFrame:
         :param debug: Print debug statements or not
         :type debug: bool
         """
-     
+
         self.length = 0
 
         self.dbg = debug
@@ -51,7 +52,10 @@ class PMUFrame:
     def parseFRAMESIZE(self):
         """Parse frame size"""
         framesizeSize = 4
-        self.framesize = int(self.frame[self.length:self.length+framesizeSize], 16)
+        self.framesize = int(
+            self.frame[self.length:self.length+framesizeSize],
+            16
+        )
         self.updateLength(framesizeSize)
         print("FRAMESIZE: ", self.framesize) if self.dbg else None
 
@@ -101,7 +105,7 @@ class SYNC:
     :param debug: Print debug statements
     :type debug: bool
     """
-    
+
     def __init__(self, syncHexStr, debug=False):
         self.dbg = debug
         self.syncHex = syncHexStr
@@ -121,6 +125,7 @@ class SYNC:
         self.frameVers = int(versBinStr, 2)
         print("Vers: ", self.frameVers) if self.dbg else None
 
+
 class SOC:
     """Class for second-of-century (SOC) word (32 bit unsigned)
 
@@ -135,7 +140,8 @@ class SOC:
         self.socHex = socHexStr
         self.secCount = int(socHexStr, 16)
         self.parseSecCount()
-        print("SOC: ", self.secCount, " - ", self.formatted) if self.dbg else None
+        if self.dbg:
+            print("SOC: ", self.secCount, " - ", self.formatted)
 
     def parseSecCount(self):
         """Parse SOC into UTC timestamp and pretty formatted timestamp"""
@@ -147,7 +153,8 @@ class SOC:
         self.mi = parsedDate.minute
         self.ss = parsedDate.second
         self.ff = 0
-        self.formatted = "{:0>4}/{:0>2}/{:0>2} {:0>2}:{:0>2}:{:0>2}".format(self.yyyy, self.mm, self.dd, self.hh, self.mi, self.ss)
-        dt = datetime(self.yyyy, self.mm, self.dd, self.hh, self.mi, self.ss) 
+        self.formatted = "{:0>4}/{:0>2}/{:0>2} {:0>2}:{:0>2}:{:0>2}".format(
+            self.yyyy, self.mm, self.dd, self.hh, self.mi, self.ss
+        )
+        dt = datetime(self.yyyy, self.mm, self.dd, self.hh, self.mi, self.ss)
         self.utcSec = (dt - datetime(1970, 1, 1)).total_seconds()
-

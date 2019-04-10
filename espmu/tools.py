@@ -161,11 +161,11 @@ def parseSamples(data, configFrame, pmus):
     Takes in an array of dataFrames and inserts the data into an array
     of aggregate phasors
 
-    :param data: List containing all the data samples 
+    :param data: List containing all the data samples
     :type data: List
-    :param configFrame: ConfigFrame containing stations 
+    :param configFrame: ConfigFrame containing stations
     :type configFrame: ConfigFrame
-    :param pmus: List of phasor values 
+    :param pmus: List of phasor values
     :type pmus: List
 
     :return: List containing all the phasor values
