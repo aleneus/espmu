@@ -12,14 +12,17 @@
 ** DONE [t] streaming: Add docstring to get_full_sample()
 ** DONE [t] Remove depracated methods in streaming
 ** DONE [t] Check streaming.py with syntax analyzers
+** DONE [t] Add Makefile
+** TODO [t] Remove debug prints
+** TODO [t] Update license
+** TODO [t] Brush
+* 0.6.0
 ** TODO [t] phasors() --rename--> get_phasor_names()
 ** TODO [t] analogs() --rename--> get_analog_names()
 ** TODO [t] streaming.py --rename--> pmu_reader.py
 ** TODO [t] PmuStreamDataReader --rename--> PmuReader
 ** TODO [t] get_full_samples() --rename--> get_data()
-* 0.6.0
 ** TODO [t] Support int numbers format
 ** TODO [t] Add streaming.py to docs
 ** TODO [p] Work on reading data from several stations
 ** TODO [t] Use logging for debug
-** TODO [t] Remove debug prints
