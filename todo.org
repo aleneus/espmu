@@ -15,13 +15,15 @@
 ** DONE [t] Add Makefile
 ** DONE [t] Remove debug prints
 ** DONE [t] Add uploading to Makefile
-** TODO [t] Update docs
-** TODO [t] Add version to __init__
+** DONE [t] Add version to __init__
+** DONE [t] Update docs
 ** TODO [t] Brush
+** TODO [t] docs: Fix copyright in conf.py
 ** TODO [t] Update license and authors
 * 0.5.1
 ** TODO [e] Add long_description to setup.py
 ** TODO [e] Add docs to readthedocs
+** TODO [e] Refactor tools.readConfigFrame2
 * 0.6.0
 ** TODO [t] phasors() --rename--> get_phasor_names()
 ** TODO [t] analogs() --rename--> get_analog_names()

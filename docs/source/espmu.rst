@@ -1,14 +1,6 @@
 ESPMU package
 =============
 
-aggPhasor
----------------------
-
-.. automodule:: espmu.aggPhasor
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 client
 ------------------
 

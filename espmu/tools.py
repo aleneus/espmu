@@ -1,58 +1,56 @@
-""" Tools for common functions relayed to commanding, reading, and
-parsing PMU data """
+"""Tools for common functions relayed to commanding, reading, and
+parsing PMU data."""
 
 from .client import Client
 from .pmuConfigFrame import ConfigFrame
 from .pmuCommandFrame import CommandFrame
-# ref
 from .pmuLib import bytesToHexStr
 from .pmuDataFrame import DataFrame
-# from .pmuDataFrame import *
 
 MAXFRAMESIZE = 65535
 
 
 def turnDataOff(cli, idcode):
-    '''
+    """
     Send command to turn off real-time data
 
     :param cli: Client being used to connect to data source
     :type cli: Client
     :param idcode: Frame ID of data source
     :type idcode: int
-    '''
+    """
     cmdOff = CommandFrame("DATAOFF", idcode)
     cli.sendData(cmdOff.fullFrameBytes)
 
 
 def turnDataOn(cli, idcode):
-    '''
+    """
     Send command to turn on real-time data
 
     :param cli: Client connection to data source
     :type cli: Client
     :param idcode: Frame ID of data source
     :type idcode: int
-    '''
+    """
     cmdOn = CommandFrame("DATAON", idcode)
     cli.sendData(cmdOn.fullFrameBytes)
 
 
 def requestConfigFrame2(cli, idcode):
-    '''
+    """
     Send command to request config frame 2
 
     :param cli: Client connection to data source
     :type cli: Client
     :param idcode: Frame ID of data source
     :type idcode: int
-    '''
+    """
     cmdConfig2 = CommandFrame("CONFIG2", idcode)
     cli.sendData(cmdConfig2.fullFrameBytes)
 
 
 def readConfigFrame2(cli, debug=False):
-    '''
+    """
     Retrieve and return config frame 2 from PMU or PDC
 
     :param cli: Client connection to data source
@@ -60,8 +58,9 @@ def readConfigFrame2(cli, debug=False):
     :param debug: Print debug statements
     :type debug: bool
     :return: Fasle (no answer at all), None (answer is wrong) or
-    Populated ConfigFrame (answer is ok)
-    '''
+        Populated ConfigFrame (answer is ok)
+
+    """
     leading_byte = cli.readSample(1)
     if leading_byte == "":  # can't get sample at all
         return False
@@ -79,13 +78,13 @@ def readConfigFrame2(cli, debug=False):
 
 
 def getDataSample(rcvr):
-    '''
+    """
     Get a data sample regardless of TCP or UDP connection
 
     :param rcvr: Object used for receiving data frames
     :type rcvr: :class:`Client`/:class:`Server`
     :return: Data frame in hex string format
-    '''
+    """
     fullHexStr = ""
     if type(rcvr) == "client":
         introHexStr = bytesToHexStr(rcvr.readSample(4))
@@ -112,7 +111,7 @@ def get_data_frames(data_sample, conf_frame):
 
 
 def startDataCapture(idcode, ip, port=4712, tcpUdp="TCP", debug=False):
-    '''
+    """
     Connect to data source, request config frame, send data start command
 
     :param idcode: Frame ID of PMU
@@ -127,7 +126,7 @@ def startDataCapture(idcode, ip, port=4712, tcpUdp="TCP", debug=False):
     :type debug: bool
 
     :return: Populated :py:class:`espmu.pmuConfigFrame.ConfigFrame` object
-    '''
+    """
     configFrame = None
 
     cli = Client(ip, port, tcpUdp)
@@ -162,10 +161,12 @@ def parseSamples(data, configFrame, pmus):
     Takes in an array of dataFrames and inserts the data into an array
     of aggregate phasors
 
-    :param data: List containing all the data samples :type data: List
-    :param configFrame: ConfigFrame containing stations :type
-    configFrame: ConfigFrame :param pmus: List of phasor values :type
-    pmus: List
+    :param data: List containing all the data samples 
+    :type data: List
+    :param configFrame: ConfigFrame containing stations 
+    :type configFrame: ConfigFrame
+    :param pmus: List of phasor values 
+    :type pmus: List
 
     :return: List containing all the phasor values
     """

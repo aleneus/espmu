@@ -2,13 +2,15 @@ from setuptools import setup, find_packages
 from codecs import open
 from os import path
 
+from espmu import __version__
+
 AUTHORS = ['Information Trust Institute (to 03.01.2017)',
            'Aleksandr Popov (since 25.12.2018)']
 
 setup(
     name='espmu',
 
-    version='0.5.0',
+    version=__version__,
 
     description='C37.118 (PMU) data parser',
     long_description='C37.118 (PMU) data parser',
