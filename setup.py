@@ -19,7 +19,7 @@ setup(
     url='https://bitbucket.org/aleneus/espmu',
 
     # Author details
-    author='; '.join(AUTHORS)
+    author='; '.join(AUTHORS),
     author_email='aleneus@gmail.com',
 
     license='MIT',
