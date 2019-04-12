@@ -18,8 +18,9 @@
 ** DONE [t] Add version to __init__
 ** DONE [t] Update docs
 ** DONE [t] Brush
-** TODO [t] docs: Fix copyright in conf.py
-** TODO [t] Update license and authors
+** DONE [t] docs: Fix copyright in conf.py
+** DONE [t] Update license and authors
+** DONE [b] Fix warnings in making docs
 * near
 ** TODO [e] Add long_description to setup.py
 ** TODO [e] Add docs to readthedocs

@@ -7,17 +7,19 @@ class Client:
     for connecting to PMUs or PDCs without needing to directly use
     Python's socket library.  Supports INET and UNIX sockets
 
-    :param theDestIp: IP address to connect to.  If using unix socket
-    this is the file name to connect to
+    :param theDestIp: IP address to connect to.  If using unix socket this is the file name to connect to
     :type theDestIp: str
+
     :param theDestPort: Port to connect to
     :type theDestPort: int
+
     :param proto: Protocol to use.  Accepts TCP or UDP
     :type proto: str
+
     :param sockType: Type of socket to create.  INET or UNIX
     :type sockType: str
-    """
 
+    """
     def __init__(self, theDestIp, theDestPort, proto="TCP", sockType="INET"):
 
         self.srcIp = None
@@ -109,8 +111,7 @@ class Client:
     def setTimeout(self, numOfSecs):
         """Set socket timeout
 
-        :param numOfSecs: Time to wait for socket action to complete
-        before throwing timeout exception
+        :param numOfSecs: Time to wait for socket action to complete before throwing timeout exception
         :type numOfSecs: int
         """
         self.theSocket.settimeout(numOfSecs)

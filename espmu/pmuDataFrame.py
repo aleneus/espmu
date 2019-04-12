@@ -73,8 +73,7 @@ class PMU:
 
     :param pmuHexStr: Bytes of PMU fields in hex str format
     :type pmuHexStr: str
-    :param theStationFrame: Station fields from config frame
-    describing PMU data
+    :param theStationFrame: Station fields from config frame describing PMU data
     :type theStationFrame: Station
     :param debug: Print debug statements
     :type debug: bool

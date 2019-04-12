@@ -80,5 +80,3 @@ transferFrame
     :members:
     :undoc-members:
     :show-inheritance:
-
-

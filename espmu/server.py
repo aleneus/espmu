@@ -38,8 +38,7 @@ class Server:
     def startServer(self, queueLen):
         """Starts the python server and listens for connections
 
-        :param queueLen: Max number of queued connections.  Usually
-        defaults to 5
+        :param queueLen: Max number of queued connections.  Usually defaults to 5
         :type queueLen: int
         """
         if self.useUdp:
@@ -93,8 +92,7 @@ class Server:
     def setTimeout(self, numOfSecs):
         """Set socket timeout
 
-        :param numOfSecs: Time to wait for socket action to complete
-        before throwing timeout exception
+        :param numOfSecs: Time to wait for socket action to complete before throwing timeout exception
         :type numOfSecs: int
         """
         self.socketConn.settimeout(numOfSecs)

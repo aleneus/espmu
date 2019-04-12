@@ -323,8 +323,7 @@ class Phunit:
 class Anunit:
     """Class for conversion factor for analog channels
 
-    :param anunitHexStr: Conversion factor for analog channels field
-    in hex str format
+    :param anunitHexStr: Conversion factor for analog channels field in hex str format
     :type anunitHexStr: str
     """
     def __init__(self, anunitHexStr, debug=False):
@@ -353,8 +352,7 @@ class Anunit:
 class Digunit:
     """Class for mask of digital status words
 
-    :param digunitHexStr: Conversion factor for digital status
-    channels field in hex str format
+    :param digunitHexStr: Conversion factor for digital status channels field in hex str format
     :type digunitHexStr: str
     """
 

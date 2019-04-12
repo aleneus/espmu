@@ -57,7 +57,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'espmu'
-copyright = '2016-2017, Chris Drew; 2017-2019, Aleksandr Popov'
+copyright = '2015 The Board of Trustees of the University of Illinois\n'
+copyright += '2018-2019 Engineering Center Energoservice'
 author = 'Chris Drew, Aleksandr Popov'
 
 # The version info for the project you're documenting, acts as replacement for
