@@ -269,7 +269,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'espmu.tex', 'ESPMU Documentation',
-     'Chris Drew', 'manual'),
+     'Chris Drew, Aleksandr Popov', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -294,7 +294,7 @@ latex_documents = [
 #
 # latex_appendices = []
 
-# It false, will not define \strong, \code, 	itleref, \crossref ... but only
+# It false, will not define \strong, \code,     itleref, \crossref ... but only
 # \sphinxstrong, ..., \sphinxtitleref, ... To help avoid clash with user added
 # packages.
 #

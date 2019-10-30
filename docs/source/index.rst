@@ -13,8 +13,8 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   espmu 
-   
+   espmu
+
 
 
 
@@ -24,4 +24,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-

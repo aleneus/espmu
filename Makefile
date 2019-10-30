@@ -1,15 +1,16 @@
-.PHONY: style, flakes, lint, uml
+.PHONY: style, flakes, lint, uml, docspdf
 
 PACKAGE = espmu
 
 all: help
 
 help:
-	@echo "style"
-	@echo "flakes"
-	@echo "lint"
-	@echo "uml"
-	@echo "make release ver=value"
+	@echo "style   | run style checker"
+	@echo "flakes  | run flakes"
+	@echo "lint    | run linter"
+	@echo "uml     | build UML diagram"
+	@echo "docspdf | build documentation in PDF format"
+	@echo "upload  | upload new release to pypi"
 
 style:
 	pycodestyle $(PACKAGE)
@@ -23,17 +24,10 @@ lint:
 uml:
 	pyreverse $(PACKAGE) -o png
 
-release:
-	@echo $(ver)
-	hg up default
-	@echo 'Update to default: OK'
-	hg merge develop
-	@echo 'Merge from develop: OK'
-	hg ci -m 'merge from develop'
-	hg tag $(ver)
-	@echo 'Add tag: OK'
-	hg up develop
-	@echo 'Update to develop: OK'
+docspdf:
+	sphinx-build -b latex docs/source/ docs/build/latex
+	sphinx-build -b latex docs/source/ docs/build/latex
+	pdflatex -output-directory docs/build/latex docs/build/latex/$(PACKAGE).tex
 
 upload:
 	python3 setup.py sdist upload

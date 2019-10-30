@@ -1,7 +1,4 @@
 from setuptools import setup, find_packages
-from codecs import open
-from os import path
-
 from espmu import __version__
 
 AUTHORS = ['Information Trust Institute',
@@ -16,7 +13,7 @@ setup(
     long_description='C37.118 (PMU) data parser',
 
     # The project's main homepage.
-    url='https://bitbucket.org/aleneus/espmu',
+    url='https://github.com/aleneus/espmu',
 
     # Author details
     author='; '.join(AUTHORS),
@@ -85,9 +82,9 @@ setup(
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and allow
     # pip to create the appropriate form of executable for the target platform.
-    entry_points={
-        'console_scripts': [
-            'espmu=espmu:main',
-        ],
-    },
+    # entry_points={
+    #     'console_scripts': [
+    #         'espmu=espmu:main',
+    #     ],
+    # },
 )

@@ -23,7 +23,9 @@
 ** DONE [b] Fix warnings in making docs
 * 0.5.1
 ** DONE [t] Replace to git
+** DONE [t] Update Makefile, setup and docs
 * near
+** TODO [e] Add README
 ** TODO [e] Add long_description to setup.py
 ** TODO [e] Add docs to readthedocs
 ** TODO [e] Refactor tools.readConfigFrame2

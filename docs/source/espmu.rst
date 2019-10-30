@@ -80,3 +80,11 @@ transferFrame
     :members:
     :undoc-members:
     :show-inheritance:
+
+streaming
+-----------------
+
+.. automodule:: espmu.streaming
+    :members:
+    :undoc-members:
+    :show-inheritance:
