@@ -21,6 +21,8 @@
 ** DONE [t] docs: Fix copyright in conf.py
 ** DONE [t] Update license and authors
 ** DONE [b] Fix warnings in making docs
+* 0.5.1
+** DONE [t] Replace to git
 * near
 ** TODO [e] Add long_description to setup.py
 ** TODO [e] Add docs to readthedocs
