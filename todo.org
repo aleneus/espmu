@@ -22,8 +22,11 @@
 ** DONE [t] Update license and authors
 ** DONE [b] Fix warnings in making docs
 * 0.5.1
-** DONE [t] Replace to git
-** DONE [t] Update Makefile, setup and docs
+** DONE Replace to git
+** DONE Update Makefile, setup and docs
+** DONE docs: examples: read_conf: update
+** TODO docs: examples: read_data: update
+** TODO docs: add release-checklist
 * near
 ** TODO [e] Add README
 ** TODO [e] Add long_description to setup.py
@@ -33,11 +36,11 @@
 ** TODO [e] Up lint result
 ** TODO [t] Replace todo from code
 * far
-** TODO [t] phasors() --rename--> get_phasor_names()
-** TODO [t] analogs() --rename--> get_analog_names()
-** TODO [t] streaming.py --rename--> pmu_reader.py
-** TODO [t] PmuStreamDataReader --rename--> PmuReader
-** TODO [t] get_full_samples() --rename--> get_data()
+** TODO [t] phasors() --> get_phasor_names()
+** TODO [t] analogs() --> get_analog_names()
+** TODO [t] streaming.py --> pmu_reader.py
+** TODO [t] PmuStreamDataReader --> PmuReader
+** TODO [t] get_full_samples() --> get_data()
 ** TODO [t] Support int numbers format
 ** TODO [t] Add streaming.py to docs
 ** TODO [p] Work on reading data from several stations
