@@ -24,6 +24,7 @@
 * 0.5.1
 ** DONE Replace to git
 ** DONE Update Makefile, setup and docs
+* 0.5.2
 ** DONE docs: examples: read_conf: update
 ** DONE docs: examples: read_data: update
 ** DONE docs: add release-checklist
