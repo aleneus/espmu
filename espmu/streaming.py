@@ -23,16 +23,21 @@ class PmuStreamDataReader:
         if not self.__cli.connectToDest():
             return False
         pt.turnDataOff(self.__cli, idcode)
+
         while True:
             pt.requestConfigFrame2(self.__cli, idcode)
+
             answer = pt.readConfigFrame2(self.__cli)
+
             if answer is None:
                 continue
-            elif not answer:
+
+            if not answer:
                 return False
-            else:
-                self.__conf_frame = answer
-                break
+
+            self.__conf_frame = answer
+            break
+
         self.__output_settings = [None]*self.__conf_frame.num_pmu
         return True
 

@@ -15,6 +15,14 @@ class ConfigFrame(PMUFrame):
     :type debug: bool
     """
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.time_base = None
+        self.num_pmu = None
+        self.stations = None
+        self.datarate = None
+
     def finishParsing(self):
         """After first 4 bytes are received, the client reads the
         remaining config frame bytes.  This function parses those
@@ -27,26 +35,26 @@ class ConfigFrame(PMUFrame):
 
     def parseTIME_BASE(self):
         """Parses resolution of FRACSEC"""
-        timebaseSize = 8
+        timebase_size = 8
         self.time_base = TimeBase(
-            self.frame[self.length:self.length+timebaseSize])
-        self.updateLength(timebaseSize)
+            self.frame[self.length:self.length+timebase_size])
+        self.updateLength(timebase_size)
         if self.dbg:
             print("TIME_BASE: ",
                   self.time_base.baseDecStr, sep="")
 
     def parseNUM_PMU(self):
         """Parse number of PMUs sending data"""
-        numpmuSize = 4
-        self.num_pmu = int(self.frame[self.length:self.length+numpmuSize], 16)
-        self.updateLength(numpmuSize)
+        numpmu_size = 4
+        self.num_pmu = int(self.frame[self.length:self.length+numpmu_size], 16)
+        self.updateLength(numpmu_size)
         if self.dbg:
             print("NUM_PMU: ", self.num_pmu, sep="")
 
     def parseStations(self):
         """Parse station names for each PMU"""
         self.stations = [None]*self.num_pmu
-        for i in range(0, self.num_pmu):
+        for i in range(self.num_pmu):
             self.stations[i] = Station(self.frame[self.length:])
             self.updateLength(self.stations[i].length)
             if self.dbg:
@@ -55,10 +63,11 @@ class ConfigFrame(PMUFrame):
 
     def parseDATARATE(self):
         """Parse data rate at which data will be received"""
-        datarateSize = 4
+        datarate_size = 4
         self.datarate = int(
-            self.frame[self.length:self.length+datarateSize], 16)
-        self.updateLength(datarateSize)
+            self.frame[self.length:self.length+datarate_size], 16)
+        self.updateLength(datarate_size)
+
         if self.dbg:
             print("DATARATE: ", self.datarate)
 
@@ -123,13 +132,13 @@ class Station:
         self.parseFNOM()
         self.parseCFGCNT()
 
-    def updateLength(self, sizeToAdd):
+    def updateLength(self, size_to_add):
         """Updates length of station frames only
 
-        :param sizeToAdd: Number of bytes to add to frame length
-        :type sizeToAdd: int
+        :param size_to_add: Number of bytes to add to frame length
+        :type size_to_add: int
         """
-        self.length = self.length + sizeToAdd
+        self.length = self.length + size_to_add
 
     def parseSTN(self):
         """Parses station name field"""
@@ -199,7 +208,7 @@ class Station:
         self.numOfChns = self.phnmr
         self.ph_channels = [None]*self.numOfChns
         leng = 32
-        for i in range(0, self.numOfChns):
+        for i in range(self.numOfChns):
             self.ph_channels[i] = bytes.fromhex(
                 self.stationFrame[self.length:self.length+leng]
             ).decode('ascii')
@@ -212,7 +221,7 @@ class Station:
         self.numOfChns = self.annmr
         self.an_channels = [None]*self.numOfChns
         leng = 32
-        for i in range(0, self.numOfChns):
+        for i in range(self.numOfChns):
             self.an_channels[i] = bytes.fromhex(
                 self.stationFrame[self.length:self.length+leng]
             ).decode('ascii')
@@ -225,7 +234,7 @@ class Station:
         self.numOfChns = 16 * self.dgnmr
         self.dg_channels = [None]*self.numOfChns
         leng = 32
-        for i in range(0, self.numOfChns):
+        for i in range(self.numOfChns):
             self.dg_channels[i] = bytes.fromhex(
                 self.stationFrame[self.length:self.length+leng]
             ).decode('ascii')
@@ -244,7 +253,7 @@ class Station:
         """Parse conversion factor for phasor channels"""
         self.phunits = [None]*self.phnmr
         leng = 8
-        for i in range(0, self.phnmr):
+        for i in range(self.phnmr):
             self.phunits[i] = Phunit(
                 self.stationFrame[self.length:self.length+leng])
             self.updateLength(leng)
@@ -253,7 +262,7 @@ class Station:
         """Parse conversion factor for analog channels"""
         self.anunits = [None]*self.annmr
         leng = 8
-        for i in range(0, self.annmr):
+        for i in range(self.annmr):
             self.anunits[i] = Anunit(
                 self.stationFrame[self.length:self.length+leng])
             self.updateLength(leng)
@@ -262,7 +271,7 @@ class Station:
         """Parse mask words for digital status words"""
         self.digunits = [None]*self.dgnmr
         leng = 8
-        for i in range(0, self.dgnmr):
+        for i in range(self.dgnmr):
             self.digunits[i] = Digunit(
                 self.stationFrame[self.length:self.length+leng])
             self.updateLength(leng)
@@ -270,12 +279,12 @@ class Station:
     def parseFNOM(self):
         """Nominal line frequency code and flags"""
         leng = 4
-        hexDigit = self.stationFrame[self.length+4]
-        hexDigitLSB = hexToBin(hexDigit, 8)[7]
-        hexDigitDec = int(hexDigitLSB, 2)
-
-        self.fnom = FundFreq(hexDigitDec).name
+        hex_digit = self.stationFrame[self.length+4]
+        hex_digit_lsb = hexToBin(hex_digit, 8)[7]
+        hex_digit_dec = int(hex_digit_lsb, 2)
+        self.fnom = FundFreq(hex_digit_dec).name
         self.updateLength(leng)
+
         if self.dbg:
             print("FNOM: ", self.fnom)
 
@@ -358,5 +367,6 @@ class Digunit:
     def __init__(self, digunitHexStr, debug=False):
         self.dbg = debug
         self.digunitHex = digunitHexStr
+
         if self.dbg:
             print("DIGUNIT: ", self.digunitHex)

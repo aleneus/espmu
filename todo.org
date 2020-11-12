@@ -28,8 +28,10 @@
 ** DONE docs: examples: read_data: update
 ** DONE docs: add release-checklist
 ** DONE ref: fix flakes
-** TODO ref: up lint result
+** DONE ref: up lint result
 * later
+** TODO ref: TransferFrame.genCrc(): duplication of code
+** TODO ref: readConfigFrame2()
 ** TODO Add README
 ** TODO Add long_description to setup.py
 ** TODO Add docs to readthedocs

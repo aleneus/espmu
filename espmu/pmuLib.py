@@ -4,29 +4,29 @@ import codecs
 import struct
 
 
-def hexToBin(hexStr, numOfBits):
+def hexToBin(hex_str, num_of_bits):
     """Converts hex string to binary
 
-    :param hexStr: Hex value in string format
-    :type hexStr: str
-    :param numOfBits: Number of bits to convert
-    :type numOfBits: int
+    :param hex_str: Hex value in string format
+    :type hex_str: str
+    :param num_of_bits: Number of bits to convert
+    :type num_of_bits: int
 
     :return: bits representing the hex values
     """
-    return bin(int(hexStr, 16))[2:].zfill(numOfBits)
+    return bin(int(hex_str, 16))[2:].zfill(num_of_bits)
 
 
-def bytesToHexStr(bytesInput):
+def bytesToHexStr(bytes_input):
     """Converts byte array to hex str
 
-    :param bytesInput: byte array to convert
-    :type bytesInput: byte-array
+    :param bytes_input: byte array to convert
+    :type bytes_input: byte-array
 
-    :return: Hex string representing bytesInput
+    :return: Hex string representing bytes_input
     """
 
-    return codecs.encode(bytesInput, 'hex').decode('ascii')
+    return codecs.encode(bytes_input, 'hex').decode('ascii')
 
 
 def doubleToHex(f):

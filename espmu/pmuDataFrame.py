@@ -1,6 +1,9 @@
+"""In this module the data frame is defined."""
+
 import math
 import struct
 from datetime import datetime
+
 from espmu.pmuFrame import PMUFrame
 from espmu.pmuLib import hexToBin
 from espmu.pmuEnum import (DataError, PmuSync, Sorting, Trigger,
@@ -12,15 +15,15 @@ class DataFrame(PMUFrame):
     """
     Class for creating a Data Frame based on C37.118-2011
 
-    :param frameInHexStr: Data frame bytes as hex str
-    :type frameInHexStr: str
-    :param theConfigFrame: Config frame describing the data frame
-    :type theConfigFrame: ConfigFrame
+    :param frame_in_hex_str: Data frame bytes as hex str
+    :type frame_in_hex_str: str
+    :param config_frame: Config frame describing the data frame
+    :type config_frame: ConfigFrame
     :param debug: Print debug statements
     :type debug: bool
     """
 
-    def __init__(self, frameInHexStr, theConfigFrame, debug=False):
+    def __init__(self, frame_in_hex_str, config_frame, debug=False):
         self.stat = None
         self.pmus = None
         self.freq = None
@@ -28,18 +31,18 @@ class DataFrame(PMUFrame):
         self.analog = None
         self.digital = None
         self.parse_pos = 0
-        self.configFrame = theConfigFrame
+        self.configFrame = config_frame
         self.dbg = debug
-        super().__init__(frameInHexStr, self.dbg)
+        super().__init__(frame_in_hex_str, self.dbg)
         super().finishParsing()
         self.parsePmus()
         self.updateSOC()
 
     def parsePmus(self):
-        """ Parses each PMU present in the data frame. """
+        """Parses each PMU present in the data frame."""
         self.parse_pos = 28
         self.pmus = [None]*self.configFrame.num_pmu
-        for i in range(0, len(self.pmus)):
+        for i in range(len(self.pmus)):
             self.pmus[i] = PMU(
                 self.frame[self.parse_pos:],
                 self.configFrame.stations[i]
@@ -47,6 +50,7 @@ class DataFrame(PMUFrame):
             self.parse_pos += self.pmus[i].length
 
     def updateSOC(self):
+        """Update SOC."""
         self.soc.ff = self.fracsec / self.configFrame.time_base.baseDecStr
         template = "{:0>4}/{:0>2}/{:0>2} {:0>2}:{:0>2}:{:0>2}{}"
         self.soc.formatted = template.format(
@@ -73,16 +77,16 @@ class DataFrame(PMUFrame):
 class PMU:
     """Class for a PMU in a data frame
 
-    :param pmuHexStr: Bytes of PMU fields in hex str format
-    :type pmuHexStr: str
-    :param theStationFrame: Station fields from config frame
+    :param pmu_hex_str: Bytes of PMU fields in hex str format
+    :type pmu_hex_str: str
+    :param station_frame: Station fields from config frame
         describing PMU data
-    :type theStationFrame: Station
+    :type station_frame: Station
     :param debug: Print debug statements
     :type debug: bool
     """
 
-    def __init__(self, pmuHexStr, theStationFrame, debug=False):
+    def __init__(self, pmu_hex_str, station_frame, debug=False):
 
         self.stat = None
         self.phasors = None
@@ -93,7 +97,7 @@ class PMU:
         self.length = 0
 
         self.dbg = debug
-        self.stationFrame = theStationFrame
+        self.stationFrame = station_frame
         self.numOfPhsrs = self.stationFrame.phnmr
         self.fmtOfPhsrs = self.stationFrame.phsrFmt
         self.typeOfPhsrs = self.stationFrame.phsrType
@@ -102,9 +106,9 @@ class PMU:
         if self.dbg:
             print("DIG:", self.numOfDgtl)
 
-        self.pmuHex = pmuHexStr
+        self.pmuHex = pmu_hex_str
         if self.dbg:
-            print(pmuHexStr)
+            print(pmu_hex_str)
         self.parseStat()
         self.parsePhasors()
         self.parseFreq()
@@ -112,9 +116,9 @@ class PMU:
         self.parseAnalog()
         self.parseDigital()
 
-    def updateLength(self, sizeToAdd):
+    def updateLength(self, size_to_add):
         """Keeps track of length for PMU frame only"""
-        self.length = self.length + sizeToAdd
+        self.length = self.length + size_to_add
 
     def parseStat(self):
         """Parse bit mapped flags field"""
@@ -131,7 +135,7 @@ class PMU:
         self.phasors = [None]*self.numOfPhsrs
         if self.dbg:
             print("NumOfPhsrs:", self.numOfPhsrs)
-        for i in range(0, self.numOfPhsrs):
+        for i in range(self.numOfPhsrs):
             self.phasors[i] = Phasor(
                 self.pmuHex[self.length:], self.stationFrame,
                 self.stationFrame.channels[i]
@@ -148,9 +152,9 @@ class PMU:
         leng = 4 if self.stationFrame.freqType == "INTEGER" else 8
         if self.dbg:
             print("FREQ:", self.pmuHex[self.length:self.length+leng])
-        unpackStr = '!h' if leng == 4 else '!f'
+        unpack_str = '!h' if leng == 4 else '!f'
         self.freq = struct.unpack(
-            unpackStr,
+            unpack_str,
             bytes.fromhex(self.pmuHex[self.length:self.length+leng])
         )[0]
         self.updateLength(leng)
@@ -162,9 +166,10 @@ class PMU:
         leng = 4 if self.stationFrame.freqType == "INTEGER" else 8
         if self.dbg:
             print("DFREQ: ", self.pmuHex[self.length:self.length+leng])
-        unpackStr = '!h' if leng == 4 else '!f'
+        unpack_str = '!h' if leng == 4 else '!f'
         self.dfreq = struct.unpack(
-            unpackStr, bytes.fromhex(self.pmuHex[self.length:self.length+leng])
+            unpack_str,
+            bytes.fromhex(self.pmuHex[self.length:self.length+leng])
         )[0]
         self.dfreq = self.dfreq / 100
         self.updateLength(leng)
@@ -175,14 +180,14 @@ class PMU:
         """Parse analog data"""
         self.analogs = [None]*self.numOfAnlg
         leng = 4 if self.stationFrame.anlgType == "INTEGER" else 8
-        unpackStr = "!h" if leng == 4 else "!f"
-        for i in range(0, self.numOfAnlg):
+        unpack_str = "!h" if leng == 4 else "!f"
+        for i in range(self.numOfAnlg):
             name = self.stationFrame.channels[self.numOfPhsrs+i].strip()
             if self.dbg:
                 print("ANALOG:",
                       self.pmuHex[self.length:self.length+leng])
             val = struct.unpack(
-                unpackStr,
+                unpack_str,
                 bytes.fromhex(self.pmuHex[self.length:self.length+leng])
             )[0]
             if self.dbg:
@@ -194,14 +199,14 @@ class PMU:
         """Parse digital data"""
         self.digitals = [None]*self.numOfDgtl
         leng = 4
-        totValBin = hexToBin(self.pmuHex[self.length:self.length+leng], 16)
-        for i in range(0, self.numOfDgtl):
+        tot_val_bin = hexToBin(self.pmuHex[self.length:self.length+leng], 16)
+        for i in range(self.numOfDgtl):
             ind = self.numOfPhsrs + self.numOfAnlg + i
             name = self.stationFrame.channels[ind].strip()
             if self.dbg:
                 print("DIGITAL:",
                       self.pmuHex[self.length:self.length+leng])
-            val = totValBin[i]
+            val = tot_val_bin[i]
             if self.dbg:
                 print(name, "=", val)
             self.digitals[i] = (name, val)
@@ -211,17 +216,17 @@ class PMU:
 class Phasor:
     """Class for holding phasor information
 
-    :param thePhsrValHex: Phasor values in hex str format
-    :type thePhsrValHex: str
-    :param theStationFrame: Station frame which describe data format
-    :type theStationFrame: Station
-    :param theName: Name of phasor channel
-    :type theName: str
+    :param phsr_val_hex: Phasor values in hex str format
+    :type phsr_val_hex: str
+    :param station_frame: Station frame which describe data format
+    :type station_frame: Station
+    :param name: Name of phasor channel
+    :type name: str
     :param debug: Print debug statements
     :type debug: bool
     """
 
-    def __init__(self, thePhsrValHex, theStationFrame, theName, debug=False):
+    def __init__(self, phsr_val_hex, station_frame, name, debug=False):
 
         self.phsrFmt = None
         self.phsrType = None
@@ -234,12 +239,14 @@ class Phasor:
         self.length = 0
 
         self.dbg = debug
-        self.phsrValHex = thePhsrValHex
-        self.stationFrame = theStationFrame
+        self.phsrValHex = phsr_val_hex
+        self.stationFrame = station_frame
         self.voltORCurr = self.stationFrame.phunits
-        self.name = theName
+        self.name = name
+
         if self.dbg:
-            print("*", theName.strip(), "*")
+            print("*", name.strip(), "*")
+
         self.parseFmt()
         self.parseVal()
 
@@ -256,13 +263,13 @@ class Phasor:
         else:
             self.toPolar(self.phsrValHex[:self.length])
 
-    def toRect(self, hexVal):
+    def toRect(self, hex_val):
         """Convert bytes to rectangular values"""
-        hex1 = hexVal[:int(self.length/2)]
-        hex2 = hexVal[int(self.length/2):]
-        unpackStr = "!h" if self.phsrType == "INTEGER" else "!f"
-        self.real = struct.unpack(unpackStr, bytes.fromhex(hex1))[0]
-        self.imag = struct.unpack(unpackStr, bytes.fromhex(hex2))[0]
+        hex1 = hex_val[:int(self.length/2)]
+        hex2 = hex_val[int(self.length/2):]
+        unpack_str = "!h" if self.phsrType == "INTEGER" else "!f"
+        self.real = struct.unpack(unpack_str, bytes.fromhex(hex1))[0]
+        self.imag = struct.unpack(unpack_str, bytes.fromhex(hex2))[0]
         self.mag = math.hypot(self.real, self.imag)
         self.rad = math.atan2(self.imag, self.real)
         self.deg = math.degrees(self.rad)
@@ -273,14 +280,14 @@ class Phasor:
             print("Rad:", "=", self.rad)
             print("Deg:", "=", self.deg)
 
-    def toPolar(self, hexVal):
+    def toPolar(self, hex_val):
         """Convert bytes to polar values"""
-        hex1 = hexVal[:int(self.length/2)]
-        hex2 = hexVal[int(self.length/2):]
-        unpackStr = "!h" if self.phsrType == "INTEGER" else "!f"
-        self.mag = struct.unpack(unpackStr, bytes.fromhex(hex1))[0]
-        self.rad = struct.unpack(unpackStr, bytes.fromhex(hex2))[0]
-        if unpackStr == '!h':
+        hex1 = hex_val[:int(self.length/2)]
+        hex2 = hex_val[int(self.length/2):]
+        unpack_str = "!h" if self.phsrType == "INTEGER" else "!f"
+        self.mag = struct.unpack(unpack_str, bytes.fromhex(hex1))[0]
+        self.rad = struct.unpack(unpack_str, bytes.fromhex(hex2))[0]
+        if unpack_str == '!h':
             self.rad = self.rad / 10000
         self.deg = math.degrees(self.rad)
         self.real = self.mag * math.cos(self.deg)
@@ -296,13 +303,13 @@ class Phasor:
 class Stat:
     """Class for foling bit mapped flags
 
-    :param statHexStr: Stat field in hex string format
-    :type statHexStr: str
+    :param stat_hex_str: Stat field in hex string format
+    :type stat_hex_str: str
     :param debug: Print debug statements
     :type debug: bool
     """
 
-    def __init__(self, statHexStr, debug=False):
+    def __init__(self, stat_hex_str, debug=False):
 
         self.dataError = None
         self.pmuSync = None
@@ -315,9 +322,11 @@ class Stat:
         self.triggerReason = None
 
         self.dbg = debug
-        self.statHex = statHexStr
+        self.statHex = stat_hex_str
+
         if self.dbg:
-            print(statHexStr)
+            print(stat_hex_str)
+
         self.parseDataError()
         self.parsePmuSync()
         self.parseSorting()

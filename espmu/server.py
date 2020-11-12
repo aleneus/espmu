@@ -1,3 +1,4 @@
+"""Server implementation."""
 import socket
 
 
@@ -8,26 +9,27 @@ class Server:
     directly use Python's socket library.  Supports INET sockets only
     (will eventually be updated).
 
-    :param thePort: Local port to listen on
-    :type thePort: int
+    :param the_port: Local port to listen on
+    :type the_port: int
     :param proto: Protocol to use.  Accepts TCP or UDP
     :type proto: str
-    :param printInfo: Specifies whether or not to print debug statements
-    :type printInfo: bool
+    :param print_info: Specifies whether or not to print debug statements
+    :type print_info: bool
     """
 
-    def __init__(self, thePort, proto="TCP", printInfo=False):
+    def __init__(self, the_port, proto="TCP", print_info=False):
 
         self.serverIP = None
         self.socketConn = None
         self.connection = None
         self.clientAddr = None
         self.serverAddr = ""
-        self.printInfo = printInfo
+        self.__print_info = print_info
 
-        self.serverPort = thePort
+        self.serverPort = the_port
         self.serverAddr = (self.serverAddr, self.serverPort)
-        if (proto.lower() == "udp"):
+
+        if proto.lower() == "udp":
             self.useUdp = True
         else:
             self.useUdp = False
@@ -35,31 +37,33 @@ class Server:
         self.startServer(5)
         self.waitForConnection()
 
-    def startServer(self, queueLen):
+    def startServer(self, queue_len):
         """Starts the python server and listens for connections
 
-        :param queueLen: Max number of queued connections.  Usually
+        :param queue_len: Max number of queued connections.  Usually
             defaults to 5
-        :type queueLen: int
+        :type queue_len: int
         """
+
         if self.useUdp:
             self.socketConn = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            if self.printInfo:
-                print("Starting UDP Server on", self.serverAddr)
+            self.__info("Starting UDP Server on", self.serverAddr)
             self.socketConn.bind(self.serverAddr)
         else:
             self.socketConn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            if self.printInfo:
+            if self.__print_info:
                 print("Starting TCP Server on", self.serverAddr)
             self.socketConn.bind(self.serverAddr)
-            self.socketConn.listen(queueLen)
+            self.socketConn.listen(queue_len)
 
     def waitForConnection(self):
         """Will block program execution until a connection is achieved"""
-        print("**********") if self.printInfo else None
+        self.__info("**********")
+
         if self.useUdp:
             return
-        print("Waiting for connection...") if self.printInfo else None
+
+        self.__info("Waiting for connection...")
 
         self.connection, self.clientAddr = self.socketConn.accept()
 
@@ -68,36 +72,41 @@ class Server:
         length and return them as an int"""
         data = ""
         if self.useUdp:
-            data, address = self.socketConn.recvfrom(length)
+            data = self.socketConn.recvfrom(length)[0]
         else:
             if self.connection is None:
                 self.waitForConnection()
             data = self.connection.recv(length)
 
-        if data:
-            return data
-        else:
-            print("Invalid/No Data Received") if self.printInfo else None
+        if not data:
+            self.__info("Invalid/No Data Received")
+
+        return data
 
     def stop(self):
         """Closes server connections"""
-        print("\n**********") if self.printInfo else None
+        self.__info("\n**********")
+
         if self.useUdp:
             self.socketConn.close()
         else:
-            print("Stopping server...") if self.printInfo else None
-            # self.connection.close()
+            if self.__print_info:
+                print("Stopping server...")
 
-        print("Stopping", self.serverAddr) if self.printInfo else None
+        self.__info("Stopping", self.serverAddr)
 
-    def setTimeout(self, numOfSecs):
+    def setTimeout(self, secs_num):
         """Set socket timeout
 
-        :param numOfSecs: Time to wait for socket action to complete
+        :param secs_num: Time to wait for socket action to complete
             before throwing timeout exception
-        :type numOfSecs: int
+        :type secs_num: int
         """
-        self.socketConn.settimeout(numOfSecs)
+        self.socketConn.settimeout(secs_num)
+
+    def __info(self, *args):
+        if self.__print_info:
+            print(*args)
 
     def __class__(self):
         return "server"
