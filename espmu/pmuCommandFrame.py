@@ -1,5 +1,5 @@
-from .pmuFrame import PMUFrame
-from .pmuEnum import *
+from espmu.pmuFrame import PMUFrame
+from espmu.pmuEnum import Command
 from time import time
 from datetime import datetime
 from PyCRC.CRCCCITT import CRCCCITT
@@ -37,7 +37,6 @@ class CommandFrame(PMUFrame):
         self.soc = self.genSoc()
         self.fracsec = self.genFracsec()
         self.commandHex = self.genCmd()
-        # TODO: No support for extended frame yet
         self.framesize = hex(int((self.length+8)/2))[2:].zfill(4)
 
         cmdHex = self.sync

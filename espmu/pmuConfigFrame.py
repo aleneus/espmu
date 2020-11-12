@@ -1,8 +1,9 @@
 """Class for parsing Config Frame 1 or 2."""
 
-from .pmuFrame import PMUFrame
-from .pmuEnum import *
-from .pmuLib import *
+from espmu.pmuEnum import (NumType, PhsrFmt, FundFreq,
+                           MeasurementType, AnlgMsrmnt)
+from espmu.pmuLib import hexToBin
+from espmu.pmuFrame import PMUFrame
 
 
 class ConfigFrame(PMUFrame):
@@ -13,10 +14,6 @@ class ConfigFrame(PMUFrame):
     :param debug: Print debug statements
     :type debug: bool
     """
-
-    def __init__(self, frameInHexStr, debug=False):
-        # Parse words common to all frames first
-        super().__init__(frameInHexStr, debug)
 
     def finishParsing(self):
         """After first 4 bytes are received, the client reads the
@@ -323,7 +320,8 @@ class Phunit:
 class Anunit:
     """Class for conversion factor for analog channels
 
-    :param anunitHexStr: Conversion factor for analog channels field in hex str format
+    :param anunitHexStr: Conversion factor for analog channels field
+        in hex str format
     :type anunitHexStr: str
     """
     def __init__(self, anunitHexStr, debug=False):
@@ -352,7 +350,8 @@ class Anunit:
 class Digunit:
     """Class for mask of digital status words
 
-    :param digunitHexStr: Conversion factor for digital status channels field in hex str format
+    :param digunitHexStr: Conversion factor for digital status
+        channels field in hex str format
     :type digunitHexStr: str
     """
 

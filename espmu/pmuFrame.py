@@ -1,6 +1,6 @@
 from datetime import datetime
-from .pmuEnum import *
-from .pmuLib import *
+from espmu.pmuEnum import FrameType
+from espmu.pmuLib import hexToBin
 
 
 class PMUFrame:

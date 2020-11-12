@@ -27,22 +27,19 @@
 ** DONE docs: examples: read_conf: update
 ** DONE docs: examples: read_data: update
 ** DONE docs: add release-checklist
-** TODO ref: fix flake
-* near
-** TODO [e] Add README
-** TODO [e] Add long_description to setup.py
-** TODO [e] Add docs to readthedocs
-** TODO [e] Refactor tools.readConfigFrame2
-** TODO [t] Fix * in imports
-** TODO [e] Up lint result
-** TODO [t] Replace todo from code
-* far
-** TODO [t] phasors() --> get_phasor_names()
-** TODO [t] analogs() --> get_analog_names()
-** TODO [t] streaming.py --> pmu_reader.py
-** TODO [t] PmuStreamDataReader --> PmuReader
-** TODO [t] get_full_samples() --> get_data()
-** TODO [t] Support int numbers format
-** TODO [t] Add streaming.py to docs
-** TODO [p] Work on reading data from several stations
-** TODO [t] Use logging for debug
+** DONE ref: fix flakes
+** TODO ref: up lint result
+* later
+** TODO Add README
+** TODO Add long_description to setup.py
+** TODO Add docs to readthedocs
+** TODO Refactor tools.readConfigFrame2
+** TODO phasors() --> get_phasor_names()
+** TODO analogs() --> get_analog_names()
+** TODO streaming.py --> pmu_reader.py
+** TODO PmuStreamDataReader --> PmuReader
+** TODO get_full_samples() --> get_data()
+** TODO Support int numbers format
+** TODO Work on reading data from several stations
+** TODO Use logging for debug
+** TODO feat: CommandFrame.createCommand(): support extended frame

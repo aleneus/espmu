@@ -1,4 +1,4 @@
-.PHONY: style, flakes, lint, uml, docspdf
+.PHONY: docs
 
 PACKAGE = espmu
 

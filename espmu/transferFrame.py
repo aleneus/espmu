@@ -1,6 +1,5 @@
-from struct import *
-from .pmuLib import *
-from .pmuEnum import *
+from struct import pack
+from espmu.pmuLib import intToHexStr, doubleToHexStr
 from PyCRC.CRCCCITT import CRCCCITT
 
 

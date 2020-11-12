@@ -1,9 +1,11 @@
 import math
 import struct
 from datetime import datetime
-from .pmuLib import *
-from .pmuFrame import PMUFrame
-from .pmuEnum import *
+from espmu.pmuFrame import PMUFrame
+from espmu.pmuLib import hexToBin
+from espmu.pmuEnum import (DataError, PmuSync, Sorting, Trigger,
+                           ConfigChange, DataModified, TimeQuality,
+                           UnlockedTime, TriggerReason)
 
 
 class DataFrame(PMUFrame):
@@ -73,7 +75,8 @@ class PMU:
 
     :param pmuHexStr: Bytes of PMU fields in hex str format
     :type pmuHexStr: str
-    :param theStationFrame: Station fields from config frame describing PMU data
+    :param theStationFrame: Station fields from config frame
+        describing PMU data
     :type theStationFrame: Station
     :param debug: Print debug statements
     :type debug: bool
