@@ -23,16 +23,21 @@ class PmuStreamDataReader:
         if not self.__cli.connectToDest():
             return False
         pt.turnDataOff(self.__cli, idcode)
+
         while True:
             pt.requestConfigFrame2(self.__cli, idcode)
+
             answer = pt.readConfigFrame2(self.__cli)
+
             if answer is None:
                 continue
-            elif not answer:
+
+            if not answer:
                 return False
-            else:
-                self.__conf_frame = answer
-                break
+
+            self.__conf_frame = answer
+            break
+
         self.__output_settings = [None]*self.__conf_frame.num_pmu
         return True
 
@@ -100,11 +105,23 @@ class PmuStreamDataReader:
             secs = data_frame.soc.secCount
             msecs = data_frame.fracsec
             msecs = msecs / data_frame.configFrame.time_base.baseDecStr
-            sample = [secs + msecs]
+
+            sample = []
+
+            # 0 - time
+            sample.append(secs + msecs)
+
+            # 1 - freq
             sample.append(station.freq)
+
+            # then phasors
             for phasor in station.phasors:
                 sample.append((phasor.mag, phasor.rad))
+
+            # and analogs
             for analog in station.analogs:
                 sample.append(analog[1])
+
             samples.append(sample)
+
         return samples

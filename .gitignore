@@ -1,5 +1,3 @@
-syntax: glob
-
 *~
 *.pyc
 *.csv
@@ -7,3 +5,8 @@ syntax: glob
 build/*
 dist/*
 *.egg-info/*
+
+docs/build/*
+
+*.pdf
+*.png

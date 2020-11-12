@@ -1,11 +1,11 @@
 """Tools for common functions relayed to commanding, reading, and
 parsing PMU data."""
 
-from .client import Client
-from .pmuConfigFrame import ConfigFrame
-from .pmuCommandFrame import CommandFrame
-from .pmuLib import bytesToHexStr
-from .pmuDataFrame import DataFrame
+from espmu.client import Client
+from espmu.pmuConfigFrame import ConfigFrame
+from espmu.pmuCommandFrame import CommandFrame
+from espmu.pmuLib import bytesToHexStr
+from espmu.pmuDataFrame import DataFrame
 
 MAXFRAMESIZE = 65535
 
@@ -19,8 +19,8 @@ def turnDataOff(cli, idcode):
     :param idcode: Frame ID of data source
     :type idcode: int
     """
-    cmdOff = CommandFrame("DATAOFF", idcode)
-    cli.sendData(cmdOff.fullFrameBytes)
+    cmd_off = CommandFrame("DATAOFF", idcode)
+    cli.sendData(cmd_off.fullFrameBytes)
 
 
 def turnDataOn(cli, idcode):
@@ -32,8 +32,8 @@ def turnDataOn(cli, idcode):
     :param idcode: Frame ID of data source
     :type idcode: int
     """
-    cmdOn = CommandFrame("DATAON", idcode)
-    cli.sendData(cmdOn.fullFrameBytes)
+    cmd_on = CommandFrame("DATAON", idcode)
+    cli.sendData(cmd_on.fullFrameBytes)
 
 
 def requestConfigFrame2(cli, idcode):
@@ -45,8 +45,8 @@ def requestConfigFrame2(cli, idcode):
     :param idcode: Frame ID of data source
     :type idcode: int
     """
-    cmdConfig2 = CommandFrame("CONFIG2", idcode)
-    cli.sendData(cmdConfig2.fullFrameBytes)
+    cmd_config_2 = CommandFrame("CONFIG2", idcode)
+    cli.sendData(cmd_config_2.fullFrameBytes)
 
 
 def readConfigFrame2(cli, debug=False):
@@ -85,19 +85,22 @@ def getDataSample(rcvr):
     :type rcvr: :class:`Client`/:class:`Server`
     :return: Data frame in hex string format
     """
-    fullHexStr = ""
+
+    full_hex_str = ""
     if type(rcvr) == "client":
-        introHexStr = bytesToHexStr(rcvr.readSample(4))
-        lenToRead = int(introHexStr[5:], 16)
-        remainingHexStr = bytesToHexStr(rcvr.readSample(lenToRead))
-        fullHexStr = introHexStr + remainingHexStr
+        intro_hex_str = bytesToHexStr(rcvr.readSample(4))
+        len_to_read = int(intro_hex_str[5:], 16)
+        rest_hex_str = bytesToHexStr(rcvr.readSample(len_to_read))
+        full_hex_str = intro_hex_str + rest_hex_str
     else:
-        fullHexStr = bytesToHexStr(rcvr.readSample(64000))
-    return fullHexStr
+        full_hex_str = bytesToHexStr(rcvr.readSample(64000))
+
+    return full_hex_str
 
 
 def get_data_frames(data_sample, conf_frame):
     """ Return list of data frames from data_sample. """
+
     data_frames = []
     start_pos = 0
     while True:
@@ -110,7 +113,7 @@ def get_data_frames(data_sample, conf_frame):
     return data_frames
 
 
-def startDataCapture(idcode, ip, port=4712, tcpUdp="TCP", debug=False):
+def startDataCapture(idcode, ip, port=4712, proto="TCP", debug=False):
     """
     Connect to data source, request config frame, send data start command
 
@@ -120,61 +123,58 @@ def startDataCapture(idcode, ip, port=4712, tcpUdp="TCP", debug=False):
     :type ip: str
     :param port: Command port on data source
     :type port: int
-    :param tcpUdp: Use TCP or UDP
-    :type tcpUdp: str
+    :param proto: Use TCP or UDP
+    :type proto: str
     :param debug: Print debug statements
     :type debug: bool
 
     :return: Populated :py:class:`espmu.pmuConfigFrame.ConfigFrame` object
     """
-    configFrame = None
+    config_frame = None
 
-    cli = Client(ip, port, tcpUdp)
+    cli = Client(ip, port, proto)
     cli.setTimeout(5)
     turnDataOff(cli, idcode)
-    while configFrame is None:
+    while config_frame is None:
         requestConfigFrame2(cli, idcode)
-        configFrame = readConfigFrame2(cli, debug)
+        config_frame = readConfigFrame2(cli, debug)
     cli.stop()
 
-    return configFrame
+    return config_frame
 
 
-def getStations(configFrame):
+def getStations(config_frame):
     """
     Returns all station names from the config frame
 
-    :param configFrame: ConfigFrame containing stations
-    :type configFrame: ConfigFrame
+    :param config_frame: ConfigFrame containing stations
+    :type config_frame: ConfigFrame
 
     :return: List containing all the station names
     """
-    stations = []
-    for s in configFrame.stations:
-        # print("Station:", s.stn)
-        stations.append(s)
-    return stations
+
+    return config_frame.stations
 
 
-def parseSamples(data, configFrame, pmus):
+def parseSamples(data, config_frame, pmus):
     """
     Takes in an array of dataFrames and inserts the data into an array
     of aggregate phasors
 
     :param data: List containing all the data samples
     :type data: List
-    :param configFrame: ConfigFrame containing stations
-    :type configFrame: ConfigFrame
+    :param config_frame: ConfigFrame containing stations
+    :type config_frame: ConfigFrame
     :param pmus: List of phasor values
     :type pmus: List
 
     :return: List containing all the phasor values
     """
-    numOfSamples = len(data)
-    for s in range(0, numOfSamples):
-        for p in range(0, len(data[s].pmus)):
-            for phasor in range(0, len(data[s].pmus[p].phasors)):
-                msec = (data[s].fracsec / configFrame.time_base.baseDecStr)
+    num_of_samples = len(data)
+    for s in range(num_of_samples):
+        for p in range(len(data[s].pmus)):
+            for phasor in range(len(data[s].pmus[p].phasors)):
+                msec = (data[s].fracsec / config_frame.time_base.baseDecStr)
                 utc_timestamp = data[s].soc.utcSec + msec
                 pmus[p][phasor].addSample(
                     utc_timestamp,
