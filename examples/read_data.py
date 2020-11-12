@@ -40,7 +40,8 @@ def main():
         sys.exit(1)
 
     if not reader.is_time_reliable():
-        print("WARNING: time is not reliable")
+        print("Time is not reliable, but I'll try to get data. Wait...")
+        sleep(3)
 
     stations = reader.stations()
     if not stations:
