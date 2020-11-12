@@ -26,7 +26,8 @@
 ** DONE Update Makefile, setup and docs
 ** DONE docs: examples: read_conf: update
 ** DONE docs: examples: read_data: update
-** TODO docs: add release-checklist
+** DONE docs: add release-checklist
+** TODO ref: fix flake
 * near
 ** TODO [e] Add README
 ** TODO [e] Add long_description to setup.py

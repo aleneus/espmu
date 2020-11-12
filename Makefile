@@ -5,18 +5,14 @@ PACKAGE = espmu
 all: help
 
 help:
-	@echo "style   | run style checker"
-	@echo "flakes  | run flakes"
-	@echo "lint    | run linter"
-	@echo "uml     | build UML diagram"
-	@echo "docspdf | build documentation in PDF format"
-	@echo "upload  | upload new release to pypi"
+	@echo "flake   run flake8"
+	@echo "lint    run linter"
+	@echo "uml     build UML diagram"
+	@echo "docs    build documentation in PDF format"
+	@echo "upload  upload new release to pypi"
 
-style:
-	pycodestyle $(PACKAGE)
-
-flakes:
-	pyflakes $(PACKAGE)
+flake:
+	flake8 $(PACKAGE)
 
 lint:
 	pylint $(PACKAGE)
@@ -24,10 +20,11 @@ lint:
 uml:
 	pyreverse $(PACKAGE) -o png
 
-docspdf:
-	sphinx-build -b latex docs/source/ docs/build/latex
+docs:
 	sphinx-build -b latex docs/source/ docs/build/latex
 	pdflatex -output-directory docs/build/latex docs/build/latex/$(PACKAGE).tex
+	pdflatex -output-directory docs/build/latex docs/build/latex/$(PACKAGE).tex
+	cp docs/build/latex/$(PACKAGE).pdf .
 
 upload:
 	python3 setup.py sdist upload
