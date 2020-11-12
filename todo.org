@@ -25,7 +25,7 @@
 ** DONE Replace to git
 ** DONE Update Makefile, setup and docs
 ** DONE docs: examples: read_conf: update
-** TODO docs: examples: read_data: update
+** DONE docs: examples: read_data: update
 ** TODO docs: add release-checklist
 * near
 ** TODO [e] Add README
